@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'dart:math' as math;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pet_boarding_space/components/drop_down_list.dart';
 import 'package:pet_boarding_space/components/pet_card.dart';
-import 'package:pet_boarding_space/data/country.dart';
 import 'package:pet_boarding_space/models/pet.dart';
 import 'package:pet_boarding_space/models/user.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class UserFormPage extends StatefulWidget {
   const UserFormPage({super.key});
@@ -22,6 +18,8 @@ class _UserFormPageState extends State<UserFormPage> {
 
   late TextEditingController nameController;
   late TextEditingController addressController;
+  late TextEditingController countryCodeController;
+  late TextEditingController phoneNoController;
   late TextEditingController emailController;
 
   void submitForm() {
@@ -33,7 +31,7 @@ class _UserFormPageState extends State<UserFormPage> {
 
     PetType petType;
     String petName;
-    int petAge; // TODO: change it to year and month later
+    int petAge;
 
     DateTime checkInDt;
     DateTime departureDt;
@@ -42,13 +40,14 @@ class _UserFormPageState extends State<UserFormPage> {
     name = nameController.text;
     address = addressController.text;
 
-    // TODO: implement proper code
-    countryCode = "+60";
-    phoneNo = "194153459";
+    // TODO: need to review
+    countryCode = countryCodeController.text;
+    phoneNo = phoneNoController.text;
 
     // TODO: need to review
     email = emailController.text;
 
+    // TODO: need to review
     petType = catIsSelected ? PetType.cat : PetType.dog;
 
     // TODO: implement proper code
@@ -96,6 +95,8 @@ class _UserFormPageState extends State<UserFormPage> {
 
     nameController = TextEditingController();
     addressController = TextEditingController();
+    countryCodeController = TextEditingController();
+    phoneNoController = TextEditingController();
     emailController = TextEditingController();
     catIsSelected = false;
     dogIsSelected = false;
@@ -271,7 +272,10 @@ class _UserFormPageState extends State<UserFormPage> {
                 ),
                 const SizedBox(height: 10),
 
-                const MyDropDownList(),
+                MyDropDownList(
+                  countryCodeController: countryCodeController,
+                  phoneNoController: phoneNoController,
+                ),
 
                 // email text field --------------------------------------------
                 TextFormField(
