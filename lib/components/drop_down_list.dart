@@ -5,7 +5,13 @@ import 'package:pet_boarding_space/data/country.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class MyDropDownList extends StatefulWidget {
-  const MyDropDownList({super.key});
+  final TextEditingController countryCodeController;
+  final TextEditingController phoneNoController;
+  const MyDropDownList({
+    super.key,
+    required this.countryCodeController,
+    required this.phoneNoController,
+  });
 
   @override
   State<MyDropDownList> createState() => _MyDropDownListState();
@@ -19,7 +25,6 @@ class _MyDropDownListState extends State<MyDropDownList> {
 
   late List<Country> countrySearchResult;
 
-  late TextEditingController countryCodeController;
   late ItemScrollController itemScrollController;
   late TextEditingController countrySearchController;
   late FocusNode countrySearchFocusNode;
@@ -66,10 +71,10 @@ class _MyDropDownListState extends State<MyDropDownList> {
     countryListHeight = 0;
     countryListButtonArrowAngle = 0;
     currCountry = Country.MY;
+    widget.countryCodeController.text = Country.MY.phoneNumberCode;
 
     countrySearchResult = [...Country.values];
 
-    countryCodeController = TextEditingController();
     itemScrollController = ItemScrollController();
     countrySearchController = TextEditingController();
     countrySearchFocusNode = FocusNode();
@@ -79,6 +84,7 @@ class _MyDropDownListState extends State<MyDropDownList> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        // Phone number textfield container ####################################
         Container(
           height: 50,
           decoration: BoxDecoration(
@@ -88,7 +94,7 @@ class _MyDropDownListState extends State<MyDropDownList> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Country code dropdown button container
+              // Country code dropdown button container ************************
               GestureDetector(
                 onTap: () => expandCountryList(),
                 child: Container(
@@ -103,12 +109,12 @@ class _MyDropDownListState extends State<MyDropDownList> {
                   child: Row(
                     children: [
                       const SizedBox(width: 15),
-                      // flag icon
+                      // flag icon ---------------------------------------------
                       Text(countryCodeToEmoji(currCountry.countryCode)),
 
                       const SizedBox(width: 5),
 
-                      // arrow icon
+                      // arrow icon --------------------------------------------
                       Transform.rotate(
                         angle: countryListButtonArrowAngle,
                         child: const Icon(
@@ -135,9 +141,11 @@ class _MyDropDownListState extends State<MyDropDownList> {
 
               const SizedBox(width: 5),
 
-              // phone number textfield
+              // phone number textfield ****************************************
               Expanded(
                 child: TextFormField(
+                  controller: widget.phoneNoController,
+                  keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                   ),
@@ -153,7 +161,10 @@ class _MyDropDownListState extends State<MyDropDownList> {
             ],
           ),
         ),
+
         const SizedBox(height: 10),
+
+        // Search bar container ################################################
         AnimatedSize(
           curve: Curves.easeIn,
           duration: const Duration(milliseconds: 100),
@@ -166,58 +177,59 @@ class _MyDropDownListState extends State<MyDropDownList> {
                 borderRadius: BorderRadius.circular(10)),
             child: Column(
               children: [
-                // search bar container
+                // search bar container ****************************************
                 Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom:
-                            BorderSide(color: Theme.of(context).dividerColor),
-                      ),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  height: 50,
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: Theme.of(context).dividerColor),
                     ),
-                    child: Row(
-                      children: [
-                        // search icon
-                        Icon(
-                          Icons.search_outlined,
-                          color: Colors.grey[600],
-                          size: 28,
-                        ),
+                  ),
+                  child: Row(
+                    children: [
+                      // search icon -------------------------------------------
+                      Icon(
+                        Icons.search_outlined,
+                        color: Colors.grey[600],
+                        size: 28,
+                      ),
 
-                        const SizedBox(width: 12),
-                        // search text field
-                        Expanded(
-                          child: TextField(
-                            focusNode: countrySearchFocusNode,
-                            controller: countrySearchController,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: getCountryText(currCountry),
-                            ),
-                            style: GoogleFonts.nunitoSans(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15,
-                            ),
-                            onTap: () => itemScrollController.jumpTo(
-                              index: countrySearchResult.indexWhere(
-                                (e) => e.countryCode == currCountry.countryCode,
-                              ),
-                            ),
-                            onChanged: (text) {
-                              setState(() {
-                                countrySearchResult = Country.values
-                                    .where((e) => getCountryText(e)
-                                        .toLowerCase()
-                                        .contains(text.toLowerCase()))
-                                    .toList();
-                              });
-                            },
+                      const SizedBox(width: 12),
+                      // search text field -------------------------------------
+                      Expanded(
+                        child: TextField(
+                          focusNode: countrySearchFocusNode,
+                          controller: countrySearchController,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: getCountryText(currCountry),
                           ),
+                          style: GoogleFonts.nunitoSans(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
+                          ),
+                          onTap: () => itemScrollController.jumpTo(
+                            index: countrySearchResult.indexWhere(
+                              (e) => e.countryCode == currCountry.countryCode,
+                            ),
+                          ),
+                          onChanged: (text) {
+                            setState(() {
+                              countrySearchResult = Country.values
+                                  .where((e) => getCountryText(e)
+                                      .toLowerCase()
+                                      .contains(text.toLowerCase()))
+                                  .toList();
+                            });
+                          },
                         ),
-                      ],
-                    )),
-                // country list container
+                      ),
+                    ],
+                  ),
+                ),
+
+                // country list container **************************************
                 SizedBox(
                   height: 200,
                   child: ScrollablePositionedList.builder(
@@ -226,10 +238,12 @@ class _MyDropDownListState extends State<MyDropDownList> {
                     itemBuilder: (context, index) {
                       Country country = countrySearchResult[index];
 
-                      // single country container
+                      // single country container ------------------------------
                       return GestureDetector(
                         onTap: () {
                           setState(() {
+                            widget.countryCodeController.text =
+                                country.phoneNumberCode;
                             currCountry = country;
                             expandCountryList();
                           });
@@ -240,21 +254,24 @@ class _MyDropDownListState extends State<MyDropDownList> {
                           decoration: BoxDecoration(
                             border: Border(
                               bottom: BorderSide(
-                                  color: Theme.of(context).dividerColor),
+                                color: Theme.of(context).dividerColor,
+                              ),
                             ),
                           ),
                           child: Row(
                             children: [
-                              // flag icon
+                              // flag icon--------------------------------------
                               Text(countryCodeToEmoji(country.countryCode)),
 
                               const SizedBox(width: 20),
-                              // country text
+
+                              // country text ----------------------------------
                               Text(
                                 getCountryText(country),
                                 style: GoogleFonts.nunitoSans(
-                                    fontWeight: FontWeight.w700),
-                              )
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
                             ],
                           ),
                         ),
