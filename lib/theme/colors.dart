@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 const primaryColor = Color(0xFFFF7518);
 
-const errorColor = Color(0xFFC5032B);
+const errorColor = Color(0xFFFF386D);
 
 const lightHeaderColor = Color(0xFFFFFBFA);
 
