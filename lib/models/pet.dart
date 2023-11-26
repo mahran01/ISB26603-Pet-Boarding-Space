@@ -1,4 +1,11 @@
-enum PetType { cat, dog }
+enum PetType {
+  cat("cat"),
+  dog("dog");
+
+  final String value;
+
+  const PetType(this.value);
+}
 
 class Pet {
   String name;
