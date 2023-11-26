@@ -21,7 +21,7 @@ class _UserFormPageState extends State<UserFormPage> {
   late bool catIsSelected;
   late bool dogIsSelected;
   late String phoneErrorMessage;
-  late bool inBeforeOutOrFirstTime;
+  late bool timeIsValid;
   late bool formIsValid;
   final Map<String, DateTime> dateTime = {
     "checkin": DateTime.now(),
@@ -335,23 +335,21 @@ class _UserFormPageState extends State<UserFormPage> {
   }
 
   void validateForm() {
-    Navigator.pop(context);
-    bool petIsSelected = catIsSelected || dogIsSelected;
-    DateTime checkin = dateTime['checkin']!;
-    DateTime checkout = dateTime['checkout']!;
-    inBeforeOutOrFirstTime = checkin.isBefore(checkout);
-    if (inBeforeOutOrFirstTime) {
-      Duration duration = checkout.difference(checkin);
-      inBeforeOutOrFirstTime =
-          inBeforeOutOrFirstTime && !durationTooShort(duration);
-    }
-    setState(() {});
-
-    if (_formKey.currentState!.validate() &&
-        petIsSelected &&
-        inBeforeOutOrFirstTime) {
-      submitForm();
-    } else {}
+    setState(() {
+      Navigator.pop(context);
+      bool petIsSelected = catIsSelected || dogIsSelected;
+      DateTime checkin = dateTime['checkin']!;
+      DateTime checkout = dateTime['checkout']!;
+      timeIsValid =
+          checkin.isAfter(DateTime.now()) && checkin.isBefore(checkout);
+      if (timeIsValid) {
+        Duration duration = checkout.difference(checkin);
+        timeIsValid = timeIsValid && !durationTooShort(duration);
+      }
+      if (_formKey.currentState!.validate() && petIsSelected && timeIsValid) {
+        submitForm();
+      } else {}
+    });
   }
 
   void submitForm() {
@@ -381,8 +379,6 @@ class _UserFormPageState extends State<UserFormPage> {
 
     checkInDateTime = dateTime["checkin"]!;
     departureDateTime = dateTime["checkout"]!;
-
-    if (departureDateTime.isBefore(checkInDateTime)) return;
 
     Pet pet = Pet(name: petName, petType: petType, age: petAge);
     User user = User(
@@ -430,7 +426,7 @@ class _UserFormPageState extends State<UserFormPage> {
     catIsSelected = false;
     dogIsSelected = false;
     phoneErrorMessage = "";
-    inBeforeOutOrFirstTime = true;
+    timeIsValid = true;
     formIsValid = false;
   }
 
@@ -653,11 +649,13 @@ class _UserFormPageState extends State<UserFormPage> {
 
                 // time error message ------------------------------------------
                 Text(
-                  durationTooShort(dateTime['checkout']!
-                          .difference(dateTime['checkin']!))
-                      ? 'Duration should be longer than 30 minutes'
-                      : 'Invalid check-in and check-out',
-                  style: !inBeforeOutOrFirstTime
+                  dateTime['checkin']!.isBefore(DateTime.now())
+                      ? "Invalid check-in time"
+                      : durationTooShort(dateTime['checkout']!
+                              .difference(dateTime['checkin']!))
+                          ? 'Duration should be longer than 30 minutes'
+                          : 'Invalid check-in and check-out',
+                  style: !timeIsValid
                       ? Theme.of(context)
                           .textTheme
                           .labelMedium
