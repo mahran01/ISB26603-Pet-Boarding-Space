@@ -41,8 +41,9 @@ ThemeData _buildMeowoofTheme() {
         primary: primaryColor,
         error: errorColor,
       ),
-      textTheme: GoogleFonts.nunitoSansTextTheme(base.textTheme)
-          .copyWith(headlineLarge: TextStyle(fontWeight: FontWeight.w600)),
+      textTheme: GoogleFonts.nunitoSansTextTheme(base.textTheme).copyWith(
+          headlineLarge: TextStyle(fontWeight: FontWeight.w600),
+          headlineSmall: TextStyle(fontWeight: FontWeight.w500)),
       appBarTheme: const AppBarTheme(
         backgroundColor: transparentColor,
         elevation: 0,

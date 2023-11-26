@@ -14,9 +14,10 @@ class SpaceListPage extends StatefulWidget {
 }
 
 class _SpaceListPageState extends State<SpaceListPage> {
-  PetType userPet = PetType.dog; //TODO: replace with user input
   @override
   Widget build(BuildContext context) {
+    User user = ModalRoute.of(context)!.settings.arguments as User;
+    PetType userPet = user.pet.petType;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
@@ -171,8 +172,13 @@ class _SpaceListPageState extends State<SpaceListPage> {
                                                         ),
                                                         onPressed: () =>
                                                             Navigator.pushNamed(
-                                                                context,
-                                                                "/paymentpage"),
+                                                          context,
+                                                          "/paymentpage",
+                                                          arguments: {
+                                                            "User": user,
+                                                            "BoardingSpace": bs
+                                                          },
+                                                        ),
                                                       ),
                                                     ],
                                                   )
@@ -189,7 +195,7 @@ class _SpaceListPageState extends State<SpaceListPage> {
                           child: BoardingSpaceCard(boardingSpace: bs),
                         );
                       } else {
-                        return null;
+                        return SizedBox();
                       }
                     },
                   ),
