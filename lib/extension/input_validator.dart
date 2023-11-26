@@ -22,6 +22,6 @@ extension InputValidator on String {
   }
 
   bool get isValidAge {
-    return RegExp(r"^[0-9]{2}$").hasMatch(this);
+    return RegExp(r"^[0-9]{1,2}$").hasMatch(this);
   }
 }
