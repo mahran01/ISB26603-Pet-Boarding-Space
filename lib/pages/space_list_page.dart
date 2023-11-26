@@ -62,7 +62,7 @@ class _SpaceListPageState extends State<SpaceListPage> {
                       if (userPet == bs.petType) {
                         return GestureDetector(
                           onTap: () {
-                            showBottomSheet(
+                            showBottomSheet<dynamic>(
                               context: context,
                               builder: (BuildContext context) => Container(
                                 height: 510,
@@ -89,6 +89,15 @@ class _SpaceListPageState extends State<SpaceListPage> {
                                             fit: BoxFit.cover,
                                           ),
                                         ),
+                                      ),
+                                      Container(
+                                        height: 4,
+                                        width: 40,
+                                        margin: EdgeInsets.only(top: 16),
+                                        decoration: BoxDecoration(
+                                            color: Colors.black.withOpacity(1),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
                                       ),
                                       Column(
                                         children: [
