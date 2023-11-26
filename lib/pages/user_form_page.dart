@@ -134,6 +134,193 @@ class _UserFormPageState extends State<UserFormPage> {
         checkoutTime);
   }
 
+  void confirmModalBottomSheet(BuildContext context) {
+    showModalBottomSheet<dynamic>(
+      isScrollControlled: true,
+      context: context,
+      builder: (BuildContext bc) {
+        return Container(
+          height: 476,
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+          child: Column(
+            children: [
+              Container(
+                height: 4,
+                width: 40,
+                decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(10)),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                    child: Icon(Icons.person),
+                  ),
+                  Text(
+                    "User detail",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ],
+              ),
+              Table(
+                columnWidths: const {
+                  0: IntrinsicColumnWidth(),
+                  1: FlexColumnWidth(),
+                },
+                defaultVerticalAlignment: TableCellVerticalAlignment.top,
+                children: [
+                  TableRow(
+                    children: [
+                      // Padding(
+                      //   padding: const EdgeInsets.all(8.0),
+                      //   child: Text("Name"),
+                      // ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text("Name"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text(nameController.text),
+                      ),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text("Address"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text(addressController.text),
+                      ),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text("Phone no."),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text(countryCodeController.text +
+                            phoneNoController.text),
+                      ),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text("Email"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text(emailController.text),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
+                    child: Image.asset(
+                      "lib/images/${catIsSelected ? 'cat' : 'dog'}_small_white.png",
+                      height: 18,
+                    ),
+                  ),
+                  Text(
+                    "${catIsSelected ? 'Cat' : 'Dog'} detail",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ],
+              ),
+              Table(
+                columnWidths: const {
+                  0: IntrinsicColumnWidth(),
+                  1: FlexColumnWidth(),
+                },
+                defaultVerticalAlignment: TableCellVerticalAlignment.top,
+                children: [
+                  TableRow(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text("${catIsSelected ? 'Cat' : 'Dog'} name"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text(petNameController.text),
+                      ),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text(
+                          "${catIsSelected ? 'Cat' : 'Dog'} age",
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text(
+                            "${petAgeController.text} year${petAgeController.text != '1' ? 's' : ''} old"),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 30),
+
+              // button row ----------------------------------------------------
+              Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    fixedSize: const Size(
+                      150,
+                      50,
+                    ),
+                    side: BorderSide(
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  child: const Text('Cancel'),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    fixedSize: const Size(
+                      150,
+                      50,
+                    ),
+                    primary: Theme.of(context).primaryColor,
+                  ),
+                  child: Text(
+                    'Confirm',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: validateForm,
+                ),
+              ])
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   void validateForm() {
     bool petIsSelected = catIsSelected || dogIsSelected;
     DateTime checkin = dateTime['checkin']!;
@@ -162,27 +349,19 @@ class _UserFormPageState extends State<UserFormPage> {
     DateTime checkInDateTime;
     DateTime departureDateTime;
 
-    // TODO: need to review
     name = nameController.text;
     address = addressController.text;
-
-    // TODO: need to review
     countryCode = countryCodeController.text;
     phoneNo = phoneNoController.text;
-
-    // TODO: need to review
     email = emailController.text;
 
-    // TODO: need to review
     petType = catIsSelected ? PetType.cat : PetType.dog;
 
-    // TODO: implement proper code
     petName = petNameController.text;
     petAge = int.parse(petAgeController.text);
 
-    // TODO: implement proper code
-    checkInDateTime = dateTime["checkin"] ?? DateTime(0);
-    departureDateTime = dateTime["checkout"] ?? DateTime(0);
+    checkInDateTime = dateTime["checkin"]!;
+    departureDateTime = dateTime["checkout"]!;
 
     if (departureDateTime.isBefore(checkInDateTime)) return;
 
@@ -259,336 +438,338 @@ class _UserFormPageState extends State<UserFormPage> {
         : dogIsSelected
             ? "Dog"
             : "Pet";
-    return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      onPanDown: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'MeoWoof Land',
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'MeoWoof Land',
         ),
-        body: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      ),
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
 
-              /* ------------------------------Depression-----------------------
-              child: ScrollablePositionedList.builder(
-                itemCount: 5,
-                itemScrollController: itemScrollController,
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: "Name",
-                      ),
-                      validator: (String? value) {
-                        return value;
-                      },
-                      onTap: () => itemScrollController.scrollTo(
-                          index: 0, duration: const Duration(milliseconds: 100)),
-                    );
-                  } else if (index == 1) {
-                    return TextFormField(
-                      maxLines: null,
-                      decoration: const InputDecoration(
-                        labelText: 'Address',
-                      ),
-                      validator: (String? value) {
-                        return value;
-                      },
-                      onTap: () => itemScrollController.scrollTo(
-                          index: 1, duration: const Duration(milliseconds: 100)),
-                    );
-                  } else if (index == 2) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 10),
-                        // phone number text field container
-                        Text(
-                          "Contact number",
-                          style:
-                              GoogleFonts.nunitoSans(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 10),
-          
-                        GestureDetector(
-                          onTap: () => itemScrollController.scrollTo(
-                              index: 2,
-                              duration: const Duration(milliseconds: 100)),
-                          child: MyDropDownList(),
-                        ),
-                      ],
-                    );
-                  } else if (index == 3) {
-                    // email text field
-                    return TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                      ),
-                      validator: (String? value) {
-                        return value;
-                      },
-                    );
-                  } else if (index == 4) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 10),
-                        Text(
-                          "Choose your pet",
-                          style:
-                              GoogleFonts.nunitoSans(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 10),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: GestureDetector(
-                                    onTap: chooseCat,
-                                    child: PetCard(
-                                      text: "Cat",
-                                      image: "cat.png",
-                                      isSelected: catIsSelected,
-                                    )),
-                              ),
-                              const SizedBox(width: 20),
-                              Expanded(
-                                child: GestureDetector(
-                                    onTap: chooseDog,
-                                    child: PetCard(
-                                      text: "Dog",
-                                      image: "dog.png",
-                                      isSelected: dogIsSelected,
-                                    )),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 1000),
-                      ],
-                    );
-                  }
-                  return const SizedBox(height: 1000);
-                },
-              */
-
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // user detail starts here ###################################
-
-                  // name text field -------------------------------------------
-                  TextFormField(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    controller: nameController,
-                    scrollPadding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom + 16 * 4,
-                    ),
+            /* ------------------------------Depression-----------------------
+            child: ScrollablePositionedList.builder(
+              itemCount: 5,
+              itemScrollController: itemScrollController,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return TextFormField(
                     decoration: const InputDecoration(
                       labelText: "Name",
                     ),
-                    validator: nameValidator,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // address text field ----------------------------------------
-                  TextFormField(
-                    controller: addressController,
-                    scrollPadding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom + 16 * 4,
-                    ),
+                    validator: (String? value) {
+                      return value;
+                    },
+                    onTap: () => itemScrollController.scrollTo(
+                        index: 0, duration: const Duration(milliseconds: 100)),
+                  );
+                } else if (index == 1) {
+                  return TextFormField(
                     maxLines: null,
-                    keyboardType: TextInputType.text,
                     decoration: const InputDecoration(
                       labelText: 'Address',
                     ),
-                    validator: addressValidator,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // phone number text field -----------------------------------
-                  Text(
-                    "Contact number",
-                    style: TextStyle(
-                      color: phoneIsValidOrFirstTime
-                          ? Theme.of(context).indicatorColor
-                          : Theme.of(context).colorScheme.error,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-
-                  MyDropDownList(
-                    countryCodeController: countryCodeController,
-                    phoneNoController: phoneNoController,
-                    phoneNoValidator: phoneNoValidator,
-                    isValid: phoneIsValidOrFirstTime,
-                  ),
-
-                  Text(
-                    phoneErrorMessage,
-                    style: !phoneIsValidOrFirstTime
-                        ? Theme.of(context).textTheme.labelMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.error)
-                        : const TextStyle(height: 0, fontSize: 0),
-                  ),
-
-                  // email text field ------------------------------------------
-                  TextFormField(
-                    controller: emailController,
-                    scrollPadding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom - 16 * 4,
-                    ),
+                    validator: (String? value) {
+                      return value;
+                    },
+                    onTap: () => itemScrollController.scrollTo(
+                        index: 1, duration: const Duration(milliseconds: 100)),
+                  );
+                } else if (index == 2) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 10),
+                      // phone number text field container
+                      Text(
+                        "Contact number",
+                        style:
+                            GoogleFonts.nunitoSans(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+        
+                      GestureDetector(
+                        onTap: () => itemScrollController.scrollTo(
+                            index: 2,
+                            duration: const Duration(milliseconds: 100)),
+                        child: MyDropDownList(),
+                      ),
+                    ],
+                  );
+                } else if (index == 3) {
+                  // email text field
+                  return TextFormField(
                     decoration: const InputDecoration(
                       labelText: 'Email',
                     ),
-                    validator: emailValidator,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // pet selector ----------------------------------------------
-                  Text(
-                    "Choose your pet",
-                    // TODO: Change into theme font
-                    style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold),
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: GestureDetector(
-                              onTap: chooseCat,
-                              child: PetCard(
-                                text: "Cat",
-                                image: "cat.png",
-                                isSelected: catIsSelected,
-                              )),
-                        ),
-                        const SizedBox(width: 20),
-                        Expanded(
-                          child: GestureDetector(
-                              onTap: chooseDog,
-                              child: PetCard(
-                                text: "Dog",
-                                image: "dog.png",
-                                isSelected: dogIsSelected,
-                              )),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // pet detail starts here ####################################
-                  Text(
-                    "$catOrDog details",
-                    style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold),
-                  ),
-
-                  const SizedBox(height: 10),
-                  // pet name text field ---------------------------------------
-                  TextFormField(
-                    controller: petNameController,
-                    scrollPadding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom + 16 * 4,
-                    ),
-                    decoration: InputDecoration(
-                      labelText: "$catOrDog Name",
-                    ),
-                    validator: nameValidator,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // TODO: pet age text field ----------------------------------------
-                  TextFormField(
-                    keyboardType: TextInputType.number,
-                    controller: petAgeController,
-                    scrollPadding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom + 16 * 4,
-                    ),
-                    decoration: InputDecoration(
-                      labelText: "$catOrDog Age",
-                    ),
-                    validator: petAgeValidator,
-                  ),
-
-                  const SizedBox(height: 20),
-                  // check in & out starts here ################################
-
-                  // check in field --------------------------------------------
-
-                  const Text("Check-in date & time"),
-                  const SizedBox(height: 5),
-
-                  MyDateTimePicker(
-                    dateController: checkinDateController,
-                    firstDate: DateTime.now(),
-                    timeController: checkinTimeController,
-                    map: dateTime,
-                    mapKey: "checkin",
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // check out field -------------------------------------------
-
-                  const Text("Check-out date & time"),
-                  const SizedBox(height: 5),
-
-                  MyDateTimePicker(
-                    dateController: checkoutDateController,
-                    firstDate: dateTime['checkin']!,
-                    timeController: checkoutTimeController,
-                    map: dateTime,
-                    mapKey: "checkout",
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  Text(
-                    "Invalid check-in and check-out",
-                    style: !inBeforeOutOrFirstTime
-                        ? Theme.of(context).textTheme.labelMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.error)
-                        : const TextStyle(height: 0, fontSize: 0),
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  // form submission button ####################################
-                  Row(
+                    validator: (String? value) {
+                      return value;
+                    },
+                  );
+                } else if (index == 4) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Expanded(child: Text("")),
-                      ElevatedButton(
-                        onPressed: () =>
-                            Navigator.pushNamed(context, "/intropage"),
-                        child: const Text("Back"),
+                      const SizedBox(height: 10),
+                      Text(
+                        "Choose your pet",
+                        style:
+                            GoogleFonts.nunitoSans(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: GestureDetector(
+                                  onTap: chooseCat,
+                                  child: PetCard(
+                                    text: "Cat",
+                                    image: "cat.png",
+                                    isSelected: catIsSelected,
+                                  )),
+                            ),
+                            const SizedBox(width: 20),
+                            Expanded(
+                              child: GestureDetector(
+                                  onTap: chooseDog,
+                                  child: PetCard(
+                                    text: "Dog",
+                                    image: "dog.png",
+                                    isSelected: dogIsSelected,
+                                  )),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 1000),
+                    ],
+                  );
+                }
+                return const SizedBox(height: 1000);
+              },
+            */
+
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // user detail starts here ###################################
+
+                // name text field -------------------------------------------
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  controller: nameController,
+                  scrollPadding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom + 16 * 4,
+                  ),
+                  decoration: const InputDecoration(
+                    labelText: "Name",
+                  ),
+                  validator: nameValidator,
+                ),
+
+                const SizedBox(height: 20),
+
+                // address text field ----------------------------------------
+                TextFormField(
+                  controller: addressController,
+                  scrollPadding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom + 16 * 4,
+                  ),
+                  maxLines: null,
+                  keyboardType: TextInputType.text,
+                  decoration: const InputDecoration(
+                    labelText: 'Address',
+                  ),
+                  validator: addressValidator,
+                ),
+
+                const SizedBox(height: 20),
+
+                // phone number text field -----------------------------------
+                Text(
+                  "Contact number",
+                  style: TextStyle(
+                    color: phoneIsValidOrFirstTime
+                        ? Theme.of(context).indicatorColor
+                        : Theme.of(context).colorScheme.error,
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                MyDropDownList(
+                  countryCodeController: countryCodeController,
+                  phoneNoController: phoneNoController,
+                  phoneNoValidator: phoneNoValidator,
+                  isValid: phoneIsValidOrFirstTime,
+                ),
+
+                Text(
+                  phoneErrorMessage,
+                  style: !phoneIsValidOrFirstTime
+                      ? Theme.of(context)
+                          .textTheme
+                          .labelMedium
+                          ?.copyWith(color: Theme.of(context).colorScheme.error)
+                      : const TextStyle(height: 0, fontSize: 0),
+                ),
+
+                // email text field ------------------------------------------
+                TextFormField(
+                  controller: emailController,
+                  scrollPadding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom - 16 * 4,
+                  ),
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                  ),
+                  validator: emailValidator,
+                ),
+
+                const SizedBox(height: 20),
+
+                // pet selector ----------------------------------------------
+                Text(
+                  "Choose your pet",
+                  // TODO: Change into theme font
+                  style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold),
+                ),
+
+                const SizedBox(height: 10),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                            onTap: chooseCat,
+                            child: PetCard(
+                              text: "Cat",
+                              image: "cat.png",
+                              isSelected: catIsSelected,
+                            )),
                       ),
                       const SizedBox(width: 20),
-                      ElevatedButton(
-                        onPressed: formIsValid ? validateForm : null,
-                        child: const Text("Submit"),
+                      Expanded(
+                        child: GestureDetector(
+                            onTap: chooseDog,
+                            child: PetCard(
+                              text: "Dog",
+                              image: "dog.png",
+                              isSelected: dogIsSelected,
+                            )),
                       ),
                     ],
                   ),
+                ),
 
-                  const SizedBox(height: 50),
-                ],
-              ),
+                const SizedBox(height: 20),
+
+                // pet detail starts here ####################################
+                Text(
+                  "$catOrDog details",
+                  style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold),
+                ),
+
+                const SizedBox(height: 10),
+                // pet name text field ---------------------------------------
+                TextFormField(
+                  controller: petNameController,
+                  scrollPadding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom + 16 * 4,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: "$catOrDog Name",
+                  ),
+                  validator: nameValidator,
+                ),
+
+                const SizedBox(height: 20),
+
+                // TODO: pet age text field ----------------------------------------
+                TextFormField(
+                  keyboardType: TextInputType.number,
+                  controller: petAgeController,
+                  scrollPadding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom + 16 * 4,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: "$catOrDog Age",
+                  ),
+                  validator: petAgeValidator,
+                ),
+
+                const SizedBox(height: 20),
+                // check in & out starts here ################################
+
+                // check in field --------------------------------------------
+
+                const Text("Check-in date & time"),
+                const SizedBox(height: 5),
+
+                MyDateTimePicker(
+                  dateController: checkinDateController,
+                  firstDate: DateTime.now(),
+                  timeController: checkinTimeController,
+                  map: dateTime,
+                  mapKey: "checkin",
+                ),
+
+                const SizedBox(height: 20),
+
+                // check out field -------------------------------------------
+
+                const Text("Check-out date & time"),
+                const SizedBox(height: 5),
+
+                MyDateTimePicker(
+                  dateController: checkoutDateController,
+                  firstDate: dateTime['checkin']!,
+                  timeController: checkoutTimeController,
+                  map: dateTime,
+                  mapKey: "checkout",
+                ),
+
+                const SizedBox(height: 10),
+
+                Text(
+                  "Invalid check-in and check-out",
+                  style: !inBeforeOutOrFirstTime
+                      ? Theme.of(context)
+                          .textTheme
+                          .labelMedium
+                          ?.copyWith(color: Theme.of(context).colorScheme.error)
+                      : const TextStyle(height: 0, fontSize: 0),
+                ),
+
+                const SizedBox(height: 30),
+
+                // form submission button ####################################
+                Row(
+                  children: [
+                    const Expanded(child: Text("")),
+                    ElevatedButton(
+                      onPressed: () =>
+                          Navigator.pushNamed(context, "/intropage"),
+                      child: const Text("Back"),
+                    ),
+                    const SizedBox(width: 20),
+                    ElevatedButton(
+                      onPressed: formIsValid
+                          ? () => confirmModalBottomSheet(context)
+                          : null,
+                      child: const Text("Submit"),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 50),
+              ],
             ),
           ),
         ),
