@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pet_boarding_space/components/date_time_picker.dart';
 import 'package:pet_boarding_space/components/drop_down_list.dart';
 import 'package:pet_boarding_space/components/pet_card.dart';
 import 'package:pet_boarding_space/models/pet.dart';
 import 'package:pet_boarding_space/models/user.dart';
-import 'package:pet_boarding_space/controllers/input_validator.dart';
+import 'package:pet_boarding_space/extension/input_validator.dart';
 
 class UserFormPage extends StatefulWidget {
   const UserFormPage({super.key});
@@ -16,11 +17,16 @@ class UserFormPage extends StatefulWidget {
 class _UserFormPageState extends State<UserFormPage> {
   final _formKey = GlobalKey<FormState>();
 
-  late bool phoneIsValid;
+  late bool phoneIsValidOrFirstTime;
   late bool catIsSelected;
   late bool dogIsSelected;
   late String phoneErrorMessage;
+  late bool inBeforeOutOrFirstTime;
   late bool formIsValid;
+  final Map<String, DateTime> dateTime = {
+    "checkin": DateTime.now(),
+    "checkout": DateTime.now(),
+  };
 
   late TextEditingController nameController;
   late TextEditingController addressController;
@@ -29,12 +35,17 @@ class _UserFormPageState extends State<UserFormPage> {
   late TextEditingController emailController;
   late TextEditingController petNameController;
   late TextEditingController petAgeController;
+  late TextEditingController checkinDateController;
+  late TextEditingController checkinTimeController;
+  late TextEditingController checkoutDateController;
+  late TextEditingController checkoutTimeController;
 
   void chooseCat() {
     setState(() {
       catIsSelected = true;
       dogIsSelected = false;
       FocusManager.instance.primaryFocus?.unfocus();
+      setFormIsValid();
     });
   }
 
@@ -43,58 +54,8 @@ class _UserFormPageState extends State<UserFormPage> {
       catIsSelected = false;
       dogIsSelected = true;
       FocusManager.instance.primaryFocus?.unfocus();
+      setFormIsValid();
     });
-  }
-
-  void submitForm() {
-    String name;
-    String address;
-    String countryCode;
-    String phoneNo;
-    String email;
-
-    PetType petType;
-    String petName;
-    int petAge;
-
-    DateTime checkInDt;
-    DateTime departureDt;
-
-    // TODO: need to review
-    name = nameController.text;
-    address = addressController.text;
-
-    // TODO: need to review
-    countryCode = countryCodeController.text;
-    phoneNo = phoneNoController.text;
-
-    // TODO: need to review
-    email = emailController.text;
-
-    // TODO: need to review
-    petType = catIsSelected ? PetType.cat : PetType.dog;
-
-    // TODO: implement proper code
-    petName = "Neko-chaan";
-    petAge = 2;
-
-    // TODO: implement proper code
-    checkInDt = DateTime.now();
-    departureDt = DateTime.now();
-
-    Pet pet = Pet(name: petName, petType: petType, age: petAge);
-    User user = User(
-      name: name,
-      address: address,
-      countryCode: countryCode,
-      phoneNo: phoneNo,
-      email: email,
-      checkInDt: checkInDt,
-      departureDt: departureDt,
-      pet: pet,
-    );
-
-    Navigator.pushNamed(context, "/spacelistpage", arguments: user);
   }
 
   String? nameValidator(String? value) {
@@ -126,16 +87,16 @@ class _UserFormPageState extends State<UserFormPage> {
 
   String? phoneNoValidator(String? value) {
     if (value == null || value.isEmpty) {
-      phoneIsValid = false;
+      phoneIsValidOrFirstTime = false;
       phoneErrorMessage = "Please enter your phone number";
       return "";
     } else if (!value.isValidPhone) {
-      phoneIsValid = false;
+      phoneIsValidOrFirstTime = false;
       phoneErrorMessage = "Please enter valid phone number";
       return "";
     }
     phoneErrorMessage = "";
-    phoneIsValid = true;
+    phoneIsValidOrFirstTime = true;
     return null;
   }
 
@@ -148,15 +109,96 @@ class _UserFormPageState extends State<UserFormPage> {
     return null;
   }
 
+  void setFormIsValid() {
+    final bool name = nameController.text.isNotEmpty;
+    final bool address = addressController.text.isNotEmpty;
+    final bool email = emailController.text.isNotEmpty;
+    final bool phoneNo = phoneNoController.text.isNotEmpty;
+    final bool petName = petNameController.text.isNotEmpty;
+    final bool petAge = petAgeController.text.isNotEmpty;
+    final bool checkinDate = checkinDateController.text.isNotEmpty;
+    final bool checkinTime = checkinTimeController.text.isNotEmpty;
+    final bool checkoutDate = checkoutDateController.text.isNotEmpty;
+    final bool checkoutTime = checkoutTimeController.text.isNotEmpty;
+
+    setState(() => formIsValid = name &&
+        address &&
+        email &&
+        phoneNo &&
+        (catIsSelected || dogIsSelected) &&
+        petName &&
+        petAge &&
+        checkinDate &&
+        checkinTime &&
+        checkoutDate &&
+        checkoutTime);
+  }
+
   void validateForm() {
     bool petIsSelected = catIsSelected || dogIsSelected;
+    DateTime checkin = dateTime['checkin']!;
+    DateTime checkout = dateTime['checkout']!;
+    inBeforeOutOrFirstTime = checkin.isBefore(checkout);
     setState(() {});
 
-    if (_formKey.currentState!.validate() && petIsSelected) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Processing Data')),
-      );
+    if (_formKey.currentState!.validate() &&
+        petIsSelected &&
+        inBeforeOutOrFirstTime) {
+      submitForm();
     } else {}
+  }
+
+  void submitForm() {
+    String name;
+    String address;
+    String countryCode;
+    String phoneNo;
+    String email;
+
+    PetType petType;
+    String petName;
+    int petAge;
+
+    DateTime checkInDateTime;
+    DateTime departureDateTime;
+
+    // TODO: need to review
+    name = nameController.text;
+    address = addressController.text;
+
+    // TODO: need to review
+    countryCode = countryCodeController.text;
+    phoneNo = phoneNoController.text;
+
+    // TODO: need to review
+    email = emailController.text;
+
+    // TODO: need to review
+    petType = catIsSelected ? PetType.cat : PetType.dog;
+
+    // TODO: implement proper code
+    petName = petNameController.text;
+    petAge = int.parse(petAgeController.text);
+
+    // TODO: implement proper code
+    checkInDateTime = dateTime["checkin"] ?? DateTime(0);
+    departureDateTime = dateTime["checkout"] ?? DateTime(0);
+
+    if (departureDateTime.isBefore(checkInDateTime)) return;
+
+    Pet pet = Pet(name: petName, petType: petType, age: petAge);
+    User user = User(
+      name: name,
+      address: address,
+      countryCode: countryCode,
+      phoneNo: phoneNo,
+      email: email,
+      checkInDateTime: checkInDateTime,
+      departureDateTime: departureDateTime,
+      pet: pet,
+    );
+
+    Navigator.pushNamed(context, "/spacelistpage", arguments: user);
   }
 
   @override
@@ -170,10 +212,27 @@ class _UserFormPageState extends State<UserFormPage> {
     emailController = TextEditingController();
     petNameController = TextEditingController();
     petAgeController = TextEditingController();
-    phoneIsValid = true;
+    checkinDateController = TextEditingController();
+    checkinTimeController = TextEditingController();
+    checkoutDateController = TextEditingController();
+    checkoutTimeController = TextEditingController();
+
+    nameController.addListener(setFormIsValid);
+    addressController.addListener(setFormIsValid);
+    phoneNoController.addListener(setFormIsValid);
+    emailController.addListener(setFormIsValid);
+    petNameController.addListener(setFormIsValid);
+    petAgeController.addListener(setFormIsValid);
+    checkinDateController.addListener(setFormIsValid);
+    checkinTimeController.addListener(setFormIsValid);
+    checkoutDateController.addListener(setFormIsValid);
+    checkoutTimeController.addListener(setFormIsValid);
+
+    phoneIsValidOrFirstTime = true;
     catIsSelected = false;
     dogIsSelected = false;
     phoneErrorMessage = "";
+    inBeforeOutOrFirstTime = true;
     formIsValid = false;
   }
 
@@ -186,6 +245,10 @@ class _UserFormPageState extends State<UserFormPage> {
     emailController.dispose();
     petNameController.dispose();
     petAgeController.dispose();
+    checkinDateController.dispose();
+    checkinTimeController.dispose();
+    checkoutDateController.dispose();
+    checkoutTimeController.dispose();
     super.dispose();
   }
 
@@ -322,6 +385,7 @@ class _UserFormPageState extends State<UserFormPage> {
 
                   // name text field -------------------------------------------
                   TextFormField(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: nameController,
                     scrollPadding: EdgeInsets.only(
                       bottom: MediaQuery.of(context).viewInsets.bottom + 16 * 4,
@@ -341,6 +405,7 @@ class _UserFormPageState extends State<UserFormPage> {
                       bottom: MediaQuery.of(context).viewInsets.bottom + 16 * 4,
                     ),
                     maxLines: null,
+                    keyboardType: TextInputType.text,
                     decoration: const InputDecoration(
                       labelText: 'Address',
                     ),
@@ -353,7 +418,7 @@ class _UserFormPageState extends State<UserFormPage> {
                   Text(
                     "Contact number",
                     style: TextStyle(
-                      color: phoneIsValid
+                      color: phoneIsValidOrFirstTime
                           ? Theme.of(context).indicatorColor
                           : Theme.of(context).colorScheme.error,
                     ),
@@ -364,16 +429,17 @@ class _UserFormPageState extends State<UserFormPage> {
                     countryCodeController: countryCodeController,
                     phoneNoController: phoneNoController,
                     phoneNoValidator: phoneNoValidator,
-                    isValid: phoneIsValid,
+                    isValid: phoneIsValidOrFirstTime,
                   ),
 
                   Text(
                     phoneErrorMessage,
-                    style: !phoneIsValid
+                    style: !phoneIsValidOrFirstTime
                         ? Theme.of(context).textTheme.labelMedium?.copyWith(
                             color: Theme.of(context).colorScheme.error)
-                        : const TextStyle(height: 0),
+                        : const TextStyle(height: 0, fontSize: 0),
                   ),
+
                   // email text field ------------------------------------------
                   TextFormField(
                     controller: emailController,
@@ -433,7 +499,7 @@ class _UserFormPageState extends State<UserFormPage> {
                   ),
 
                   const SizedBox(height: 10),
-                  // TODO: pet name text field ---------------------------------
+                  // pet name text field ---------------------------------------
                   TextFormField(
                     controller: petNameController,
                     scrollPadding: EdgeInsets.only(
@@ -447,7 +513,7 @@ class _UserFormPageState extends State<UserFormPage> {
 
                   const SizedBox(height: 20),
 
-                  // TODO: pet age text field ----------------------------------
+                  // TODO: pet age text field ----------------------------------------
                   TextFormField(
                     keyboardType: TextInputType.number,
                     controller: petAgeController,
@@ -455,16 +521,51 @@ class _UserFormPageState extends State<UserFormPage> {
                       bottom: MediaQuery.of(context).viewInsets.bottom + 16 * 4,
                     ),
                     decoration: InputDecoration(
-                      labelText: "$catOrDog Age (Year/s)",
+                      labelText: "$catOrDog Age",
                     ),
                     validator: petAgeValidator,
                   ),
 
+                  const SizedBox(height: 20),
                   // check in & out starts here ################################
 
-                  // TODO: check in field --------------------------------------
+                  // check in field --------------------------------------------
 
-                  // TODO: check out field -------------------------------------
+                  const Text("Check-in date & time"),
+                  const SizedBox(height: 5),
+
+                  MyDateTimePicker(
+                    dateController: checkinDateController,
+                    firstDate: DateTime.now(),
+                    timeController: checkinTimeController,
+                    map: dateTime,
+                    mapKey: "checkin",
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // check out field -------------------------------------------
+
+                  const Text("Check-out date & time"),
+                  const SizedBox(height: 5),
+
+                  MyDateTimePicker(
+                    dateController: checkoutDateController,
+                    firstDate: dateTime['checkin']!,
+                    timeController: checkoutTimeController,
+                    map: dateTime,
+                    mapKey: "checkout",
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  Text(
+                    "Invalid check-in and check-out",
+                    style: !inBeforeOutOrFirstTime
+                        ? Theme.of(context).textTheme.labelMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.error)
+                        : const TextStyle(height: 0, fontSize: 0),
+                  ),
 
                   const SizedBox(height: 30),
 
@@ -485,7 +586,6 @@ class _UserFormPageState extends State<UserFormPage> {
                     ],
                   ),
 
-                  // TODO: testing purpose #####################################
                   const SizedBox(height: 50),
                 ],
               ),
