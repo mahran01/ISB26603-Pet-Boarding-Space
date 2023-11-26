@@ -24,9 +24,13 @@ class _PaymentPageState extends State<PaymentPage> {
     double total = 0.0;
 
     Duration duration = outTime.difference(inTime);
-    total += duration.inDays * dailyRates;
-    total += duration.inHours * hourlyRates;
-    total += duration.inMinutes >= 30 ? hourlyRates : 0;
+    int day = duration.inDays;
+    int hour = duration.inHours - (day * 24);
+    int minute = duration.inMinutes - (duration.inHours * 60);
+
+    total += day * dailyRates;
+    total += hour * (hourlyRates);
+    total += minute >= 30 ? hourlyRates : 0;
 
     return total;
   }
