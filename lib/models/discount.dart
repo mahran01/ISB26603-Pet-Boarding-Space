@@ -23,13 +23,13 @@ class Discount {
     return minimumSpent <= price;
   }
 
-  double calculate(double price) {
+  double getDiscount(double price) {
     switch (type) {
       case DiscountType.percentage:
         deduction = price * (percentage / 100);
         deduction = math.min(maximumValue, deduction);
       case DiscountType.deduction:
-        return price - deduction;
+        return deduction;
     }
     return price;
   }
