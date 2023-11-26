@@ -125,7 +125,7 @@ class _MyDateTimePickerState extends State<MyDateTimePicker> {
                     );
                     setState(() {
                       widget.timeController.text =
-                          "${picked.hourOfPeriod.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')} ${picked.hour < 12 ? 'PM' : 'AM'}";
+                          "${picked.hourOfPeriod.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')} ${picked.hour < 12 ? 'AM' : 'PM'}";
                     });
                   }
                 },
