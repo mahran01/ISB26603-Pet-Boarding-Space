@@ -80,7 +80,7 @@ class _PaymentPageState extends State<PaymentPage> {
                 'Hourly Rate : RM${bs.hourlyRates}',
               ),
               Text(
-                'Daily Rates : ${bs.dailyRates}',
+                'Daily  Rates : ${bs.dailyRates}',
               ),
             ],
           ),
