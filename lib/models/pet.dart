@@ -1,6 +1,6 @@
 enum PetType {
-  cat("cat"),
-  dog("dog");
+  cat("Cat"),
+  dog("Dog");
 
   final String value;
 
