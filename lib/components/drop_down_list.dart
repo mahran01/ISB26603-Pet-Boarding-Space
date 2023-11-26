@@ -7,10 +7,15 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 class MyDropDownList extends StatefulWidget {
   final TextEditingController countryCodeController;
   final TextEditingController phoneNoController;
+  final String? Function(String?)? phoneNoValidator;
+  final bool isValid;
+
   const MyDropDownList({
     super.key,
     required this.countryCodeController,
     required this.phoneNoController,
+    required this.phoneNoValidator,
+    this.isValid = true,
   });
 
   @override
@@ -82,13 +87,16 @@ class _MyDropDownListState extends State<MyDropDownList> {
 
   @override
   Widget build(BuildContext context) {
+    final Color dividerColor = Theme.of(context).dividerColor;
+    final Color errorColor = Theme.of(context).colorScheme.error;
+    final Color changingColor = widget.isValid ? dividerColor : errorColor;
     return Column(
       children: [
         // Phone number textfield container ####################################
         Container(
           height: 50,
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
+            border: Border.all(color: changingColor),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(
@@ -99,10 +107,10 @@ class _MyDropDownListState extends State<MyDropDownList> {
                 onTap: () => expandCountryList(),
                 child: Container(
                   height: 50,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     border: Border(
                       right: BorderSide(
-                        color: Colors.grey,
+                        color: changingColor,
                       ),
                     ),
                   ),
@@ -133,7 +141,7 @@ class _MyDropDownListState extends State<MyDropDownList> {
               Text(
                 currCountry.phoneNumberCode,
                 style: GoogleFonts.nunitoSans(
-                  color: Colors.grey[600],
+                  color: dividerColor,
                   fontWeight: FontWeight.w700,
                   fontSize: 15,
                 ),
@@ -147,15 +155,13 @@ class _MyDropDownListState extends State<MyDropDownList> {
                   controller: widget.phoneNoController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
-                    border: InputBorder.none,
-                  ),
+                      border: InputBorder.none,
+                      errorStyle: TextStyle(fontSize: 0)),
                   style: GoogleFonts.nunitoSans(
                     fontWeight: FontWeight.w600,
                     fontSize: 15,
                   ),
-                  validator: (String? value) {
-                    return value;
-                  },
+                  validator: widget.phoneNoValidator,
                 ),
               ),
             ],
@@ -172,7 +178,7 @@ class _MyDropDownListState extends State<MyDropDownList> {
             height: countryListHeight,
             decoration: BoxDecoration(
                 border: Border.all(
-                  color: Theme.of(context).dividerColor,
+                  color: dividerColor,
                 ),
                 borderRadius: BorderRadius.circular(10)),
             child: Column(
@@ -183,7 +189,7 @@ class _MyDropDownListState extends State<MyDropDownList> {
                   height: 50,
                   decoration: BoxDecoration(
                     border: Border(
-                      bottom: BorderSide(color: Theme.of(context).dividerColor),
+                      bottom: BorderSide(color: dividerColor),
                     ),
                   ),
                   child: Row(
@@ -191,7 +197,7 @@ class _MyDropDownListState extends State<MyDropDownList> {
                       // search icon -------------------------------------------
                       Icon(
                         Icons.search_outlined,
-                        color: Colors.grey[600],
+                        color: dividerColor,
                         size: 28,
                       ),
 
@@ -254,7 +260,7 @@ class _MyDropDownListState extends State<MyDropDownList> {
                           decoration: BoxDecoration(
                             border: Border(
                               bottom: BorderSide(
-                                color: Theme.of(context).dividerColor,
+                                color: dividerColor,
                               ),
                             ),
                           ),

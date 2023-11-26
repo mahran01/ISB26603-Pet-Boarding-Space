@@ -51,16 +51,3 @@ class AssignedValues {
     //     dailyRates: 50.00),
   ];
 }
-
-class InputValidition {
-  static bool leadingWhitespace(String s) => RegExp(r"/^[\s]+/g").hasMatch(s);
-  static bool trailingWhitespace(String s) => RegExp(r"/[\s]+$/g").hasMatch(s);
-
-  static bool name(String s) =>
-      RegExp(r"/^(?=.*[A-Z])[A-Z0-9\@\s]*$/gis").hasMatch(s);
-  static bool address(String s) =>
-      RegExp(r"/^(?=.*[A-Z])[A-Z0-9\@\-\.\,\/\s]*$/gis").hasMatch(s);
-  static bool phoneNo(String s) => RegExp(r"/^[0-9]{4,14}$/gs").hasMatch(s);
-  static bool email(String s) =>
-      RegExp(r"^[A-Z0-9\_\.]+\@[A-Z]+\.[A-Z\.]+$\gis").hasMatch(s);
-}

@@ -6,8 +6,8 @@ class User {
   String countryCode;
   String phoneNo;
   String email;
-  DateTime checkInDt;
-  DateTime departureDt;
+  DateTime checkInDateTime;
+  DateTime departureDateTime;
   Pet pet;
 
   User({
@@ -16,8 +16,8 @@ class User {
     required this.countryCode,
     required this.phoneNo,
     required this.email,
-    required this.checkInDt,
-    required this.departureDt,
+    required this.checkInDateTime,
+    required this.departureDateTime,
     required this.pet,
   });
 
@@ -26,7 +26,7 @@ class User {
   String get _countryCode => countryCode;
   String get _phoneNo => phoneNo;
   String get _email => email;
-  DateTime get _checkInDt => checkInDt;
-  DateTime get _departureDt => departureDt;
+  DateTime get _checkInDt => checkInDateTime;
+  DateTime get _departureDt => departureDateTime;
   Pet get _pet => pet;
 }
