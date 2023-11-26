@@ -163,32 +163,35 @@ class _SpaceListPageState extends State<SpaceListPage> {
                                                       ),
                                                       SizedBox(width: 10),
                                                       ElevatedButton(
-                                                        style: ElevatedButton
-                                                            .styleFrom(
-                                                          fixedSize: const Size(
-                                                            150,
-                                                            50,
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                            fixedSize:
+                                                                const Size(
+                                                              150,
+                                                              50,
+                                                            ),
+                                                            primary: Theme.of(
+                                                                    context)
+                                                                .primaryColor,
                                                           ),
-                                                          primary:
-                                                              Theme.of(context)
-                                                                  .primaryColor,
-                                                        ),
-                                                        child: Text(
-                                                          'Book',
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
-                                                        onPressed: () =>
+                                                          child: Text(
+                                                            'Book',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
                                                             Navigator.pushNamed(
-                                                          context,
-                                                          "/paymentpage",
-                                                          arguments: {
-                                                            "User": user,
-                                                            "BoardingSpace": bs
-                                                          },
-                                                        ),
-                                                      ),
+                                                                context,
+                                                                "/paymentpage",
+                                                                arguments: {
+                                                                  "User": user,
+                                                                  "BoardingSpace":
+                                                                      bs
+                                                                });
+                                                          }),
                                                     ],
                                                   )
                                                 ],
