@@ -1,3 +1,4 @@
+import 'package:pet_boarding_space/models/discount.dart';
 import 'package:pet_boarding_space/models/pet.dart';
 import 'package:pet_boarding_space/models/boarding_space.dart';
 
@@ -50,4 +51,46 @@ class AssignedValues {
     //     hourlyRates: 18.00,
     //     dailyRates: 50.00),
   ];
+
+  static final Map<String, Discount> discounts = {
+    'SUMMER15': Discount(
+      code: 'SUMMER15',
+      percentage: 15.0,
+      type: DiscountType.percentage,
+      maximumValue: 50.0,
+    ),
+    'BLACKFRIDAY20': Discount(
+      code: 'BLACKFRIDAY20',
+      percentage: 20.0,
+      type: DiscountType.percentage,
+      minimumSpent: 50.0,
+      maximumValue: 100.0,
+    ),
+    'FREESHIP': Discount(
+      code: 'FREESHIP',
+      deduction: 15.0,
+      type: DiscountType.deduction,
+      minimumSpent: 100.0,
+    ),
+    'WEEKEND10': Discount(
+      code: 'WEEKEND10',
+      percentage: 10.0,
+      type: DiscountType.percentage,
+      maximumValue: 25.0,
+    ),
+    'NEWCUSTOMER5': Discount(
+      code: 'NEWCUSTOMER5',
+      percentage: 5.0,
+      type: DiscountType.percentage,
+      minimumSpent: 20.0,
+      maximumValue: 10.0,
+    ),
+    'LOYALTY10': Discount(
+      code: 'LOYALTY10',
+      percentage: 10.0,
+      type: DiscountType.percentage,
+      minimumSpent: 150.0,
+      maximumValue: 45.0,
+    ),
+  };
 }
