@@ -15,40 +15,66 @@ class PaymentPage extends StatefulWidget {
 class _PaymentPageState extends State<PaymentPage> {
   late TextEditingController discountController;
 
-  double calculateTotal({
-    required DateTime inTime,
-    required DateTime outTime,
-    required double dailyRates,
-    required double hourlyRates,
-  }) {
+  late User user;
+  late BoardingSpace bs;
+  late double totalRate;
+  late bool discountAvailable;
+  late double discount;
+  late double totalPayment;
+
+  void applyDiscount() {
+    setState(() {
+      String inputCode = discountController.text;
+      bool isValid = AssignedValues.discounts.containsKey(inputCode);
+      if (isValid) {
+        discountAvailable = true;
+        discount = AssignedValues.discounts[inputCode]!.getDiscount(totalRate);
+        totalPayment = totalRate - discount;
+        print(totalPayment);
+      } else {
+        discountAvailable = false;
+        discount = 0;
+        totalPayment = totalRate;
+      }
+    });
+  }
+
+  double calculateRate(User user, BoardingSpace bs) {
     double total = 0.0;
 
-    Duration duration = outTime.difference(inTime);
+    Duration duration = user.departureDateTime.difference(user.checkInDateTime);
     int day = duration.inDays;
     int hour = duration.inHours - (day * 24);
     int minute = duration.inMinutes - (duration.inHours * 60);
 
-    total += day * dailyRates;
-    total += hour * (hourlyRates);
-    total += minute >= 30 ? hourlyRates : 0;
+    total += day * bs.dailyRates;
+    total += hour * (bs.hourlyRates);
+    total += minute >= 30 ? bs.hourlyRates : 0;
 
     return total;
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
     discountController = TextEditingController();
+
+    totalRate = 0.0;
+    discountAvailable = false;
+    discount = 0.0;
+    totalPayment = 0.0;
   }
 
   @override
   Widget build(BuildContext context) {
     Map<String, Object> args =
         ModalRoute.of(context)!.settings.arguments as Map<String, Object>;
-    User user = args["User"] as User;
-    BoardingSpace bs = args["BoardingSpace"] as BoardingSpace;
+
+    user = args["User"] as User;
+    bs = args["BoardingSpace"] as BoardingSpace;
+
+    totalRate = calculateRate(user, bs);
+    totalPayment = totalRate - discount;
 
     return Scaffold(
       appBar: AppBar(),
@@ -384,7 +410,7 @@ class _PaymentPageState extends State<PaymentPage> {
                         ),
                       ),
                       child: Text('Apply'),
-                      onPressed: () {},
+                      onPressed: applyDiscount,
                     ),
                   ),
                 ],
@@ -397,17 +423,19 @@ class _PaymentPageState extends State<PaymentPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Total Rate:'),
-                        Text(
-                            'RM ${calculateTotal(inTime: user.checkInDateTime, outTime: user.departureDateTime, dailyRates: bs.dailyRates, hourlyRates: bs.hourlyRates).toString()}'),
+                        Text('RM ${totalRate.toStringAsFixed(2)}'),
                       ],
                     ),
                     SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Discount:'),
-                        Text('RM '),
-                      ],
+                    SizedBox(
+                      height: discountAvailable ? null : 0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Discount:'),
+                          Text('- RM ${discount.toStringAsFixed(2)}'),
+                        ],
+                      ),
                     ),
                     SizedBox(height: 10),
                     Row(
@@ -421,7 +449,7 @@ class _PaymentPageState extends State<PaymentPage> {
                               ?.copyWith(fontWeight: FontWeight.w900),
                         ),
                         Text(
-                          'RM ',
+                          'RM ${totalPayment.toStringAsFixed(2)}',
                           style: Theme.of(context)
                               .textTheme
                               .titleMedium
@@ -494,7 +522,7 @@ class _RatingDialogState extends State<RatingDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Center(
-        child: Text('Rate this post'),
+        child: Text('Rate your experience'),
       ),
       content: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
