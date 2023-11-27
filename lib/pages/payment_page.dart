@@ -193,6 +193,60 @@ class _PaymentPageState extends State<PaymentPage> {
                   const Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                    child: Icon(Icons.date_range),
+                  ),
+                  Text(
+                    "Boarding Detail",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w900),
+                  ),
+                ],
+              ),
+              Table(
+                columnWidths: const {
+                  0: IntrinsicColumnWidth(),
+                  1: FlexColumnWidth(),
+                },
+                defaultVerticalAlignment: TableCellVerticalAlignment.top,
+                children: [
+                  TableRow(
+                    children: [
+                      // Padding(
+                      //   padding: const EdgeInsets.all(8.0),
+                      //   child: Text("Name"),
+                      // ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text("Check in"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text(user.checkInDateTime.toString()),
+                      ),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text("Check out"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text(user.departureDateTime.toString()),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: 25),
+              Row(
+                children: [
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
                     child: Icon(Icons.house),
                   ),
                   Text(

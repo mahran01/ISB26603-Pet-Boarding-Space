@@ -21,7 +21,7 @@ class _SpaceListPageState extends State<SpaceListPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(150.0),
+        preferredSize: Size.fromHeight(MediaQuery.of(context).size.height / 5),
         child: AppBar(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -35,7 +35,7 @@ class _SpaceListPageState extends State<SpaceListPage> {
         child: Container(
           child: Padding(
             padding:
-                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,7 +241,7 @@ class BoardingSpaceCard extends StatelessWidget {
           children: [
             Container(
               width: 300,
-              height: 310,
+              height: MediaQuery.of(context).size.height / 5 * 2,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(35),
@@ -251,8 +251,31 @@ class BoardingSpaceCard extends StatelessWidget {
                     image: AssetImage(boardingSpace.imageUrl),
                     fit: BoxFit.cover),
               ),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      'RM ${boardingSpace.hourlyRates} per hour',
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 245, 241, 241),
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    Text(
+                      'RM ${boardingSpace.dailyRates} per day',
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 245, 241, 241),
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 10),
             Text(
               boardingSpace.name,
               style: Theme.of(context).textTheme.headlineSmall,
