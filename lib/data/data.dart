@@ -68,7 +68,13 @@ class AssignedValues {
     ),
     'FREESHIP': Discount(
       code: 'FREESHIP',
-      deduction: 15.0,
+      amount: 15.0,
+      type: DiscountType.deduction,
+      minimumSpent: 100.0,
+    ),
+    'PETLOVER': Discount(
+      code: 'PETLOVER',
+      amount: 50.0,
       type: DiscountType.deduction,
       minimumSpent: 100.0,
     ),
