@@ -4,7 +4,7 @@ enum DiscountType { deduction, percentage }
 
 class Discount {
   final String code;
-  double deduction;
+  final double amount;
   final double percentage;
   final DiscountType type;
   final double minimumSpent;
@@ -12,7 +12,7 @@ class Discount {
 
   Discount({
     required this.code,
-    this.deduction = 0.0,
+    this.amount = 0.0,
     this.percentage = 0.0,
     required this.type,
     this.minimumSpent = 0.0,
@@ -24,13 +24,18 @@ class Discount {
   }
 
   double getDiscount(double price) {
-    switch (type) {
-      case DiscountType.percentage:
-        deduction = price * (percentage / 100);
-        deduction = math.min(maximumValue, deduction);
-      case DiscountType.deduction:
-        return deduction;
+    double deduction = 0.0;
+    if (isValid(price)) {
+      switch (type) {
+        case DiscountType.percentage:
+          deduction = price * (percentage / 100);
+          deduction = math.min(maximumValue, deduction);
+          break;
+        case DiscountType.deduction:
+          deduction = amount;
+          break;
+      }
     }
-    return price;
+    return deduction;
   }
 }
