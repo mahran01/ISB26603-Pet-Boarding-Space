@@ -62,7 +62,8 @@ class _SpaceListPageState extends State<SpaceListPage> {
                       if (userPet == bs.petType) {
                         return GestureDetector(
                           onTap: () {
-                            showBottomSheet<dynamic>(
+                            showModalBottomSheet<dynamic>(
+                              isScrollControlled: true,
                               context: context,
                               builder: (BuildContext context) => Container(
                                 height: 510,

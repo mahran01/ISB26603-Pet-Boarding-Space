@@ -508,11 +508,30 @@ class _RatingDialogState extends State<RatingDialog> {
       ),
       actions: <Widget>[
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            fixedSize: const Size(
+              110,
+              50,
+            ),
+            side: BorderSide(
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
           child: Text('CANCEL'),
           onPressed: Navigator.of(context).pop,
         ),
         ElevatedButton(
-          child: Text('NEXT'),
+          style: ElevatedButton.styleFrom(
+            fixedSize: const Size(
+              110,
+              50,
+            ),
+            primary: Theme.of(context).primaryColor,
+          ),
+          child: Text(
+            'NEXT',
+            style: TextStyle(color: Colors.white),
+          ),
           onPressed: () {
             Navigator.of(context).pop(_stars);
             Navigator.pushNamed(
