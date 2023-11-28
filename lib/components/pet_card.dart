@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pet_boarding_space/theme/colors.dart';
 
 class PetCard extends StatefulWidget {
   final String text;

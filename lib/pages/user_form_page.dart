@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:pet_boarding_space/components/date_time_picker.dart';
 import 'package:pet_boarding_space/components/drop_down_list.dart';
 import 'package:pet_boarding_space/components/pet_card.dart';
@@ -146,187 +146,238 @@ class _UserFormPageState extends State<UserFormPage> {
       context: context,
       builder: (BuildContext bc) {
         return Container(
-          height: 476,
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-          child: Column(
+          padding: const EdgeInsets.all(20),
+          child: Wrap(
             children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    Container(
-                      height: 4,
-                      width: 40,
-                      decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 12.0, vertical: 8.0),
-                          child: Icon(Icons.person),
-                        ),
-                        Text(
-                          "User detail",
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      ],
-                    ),
-                    Table(
-                      columnWidths: const {
-                        0: IntrinsicColumnWidth(),
-                        1: FlexColumnWidth(),
-                      },
-                      defaultVerticalAlignment: TableCellVerticalAlignment.top,
-                      children: [
-                        TableRow(
-                          children: [
-                            // Padding(
-                            //   padding: const EdgeInsets.all(8.0),
-                            //   child: Text("Name"),
-                            // ),
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Text("Name"),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Text(nameController.text),
-                            ),
-                          ],
-                        ),
-                        TableRow(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Text("Address"),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Text(addressController.text),
-                            ),
-                          ],
-                        ),
-                        TableRow(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Text("Phone no."),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Text(countryCodeController.text +
-                                  phoneNoController.text),
-                            ),
-                          ],
-                        ),
-                        TableRow(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Text("Email"),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Text(emailController.text),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 12.0, vertical: 10.0),
-                          child: Image.asset(
-                            "lib/images/${catIsSelected ? 'cat' : 'dog'}_small_white.png",
-                            height: 18,
-                          ),
-                        ),
-                        Text(
-                          "${catIsSelected ? 'Cat' : 'Dog'} detail",
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      ],
-                    ),
-                    Table(
-                      columnWidths: const {
-                        0: IntrinsicColumnWidth(),
-                        1: FlexColumnWidth(),
-                      },
-                      defaultVerticalAlignment: TableCellVerticalAlignment.top,
-                      children: [
-                        TableRow(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child:
-                                  Text("${catIsSelected ? 'Cat' : 'Dog'} name"),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Text(petNameController.text),
-                            ),
-                          ],
-                        ),
-                        TableRow(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Text(
-                                "${catIsSelected ? 'Cat' : 'Dog'} age",
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Text(
-                                  "${petAgeController.text} year${petAgeController.text != '1' ? 's' : ''} old"),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+              Center(
+                child: Container(
+                  height: 4,
+                  width: 40,
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(10)),
                 ),
               ),
+              Column(
+                children: [
+                  const SizedBox(height: 20),
+                  // user detail ###############################################
+                  Row(
+                    children: [
+                      const SizedBox(width: 10),
+                      const Icon(Icons.person),
+                      const SizedBox(width: 20),
+                      Text(
+                        "User detail",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 20),
+                  Table(
+                    columnWidths: const {
+                      0: IntrinsicColumnWidth(),
+                      1: FlexColumnWidth(),
+                    },
+                    defaultVerticalAlignment: TableCellVerticalAlignment.top,
+                    children: [
+                      TableRow(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.all(5.0),
+                            child: Text("Name"),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Text(nameController.text),
+                          ),
+                        ],
+                      ),
+                      TableRow(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.all(5.0),
+                            child: Text("Address"),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Text(addressController.text),
+                          ),
+                        ],
+                      ),
+                      TableRow(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.all(5.0),
+                            child: Text("Phone no."),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Text(countryCodeController.text +
+                                phoneNoController.text),
+                          ),
+                        ],
+                      ),
+                      TableRow(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.all(5.0),
+                            child: Text("Email"),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Text(emailController.text),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  // pet detail ################################################
+                  Row(
+                    children: [
+                      const SizedBox(width: 10),
+                      Image.asset(
+                        "lib/images/${catIsSelected ? 'cat' : 'dog'}_small_white.png",
+                        height: 18,
+                      ),
+                      const SizedBox(width: 24),
+                      Text(
+                        "${catIsSelected ? 'Cat' : 'Dog'} detail",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Table(
+                    columnWidths: const {
+                      0: IntrinsicColumnWidth(),
+                      1: FlexColumnWidth(),
+                    },
+                    defaultVerticalAlignment: TableCellVerticalAlignment.top,
+                    children: [
+                      TableRow(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child:
+                                Text("${catIsSelected ? 'Cat' : 'Dog'} name"),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Text(petNameController.text),
+                          ),
+                        ],
+                      ),
+                      TableRow(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Text(
+                              "${catIsSelected ? 'Cat' : 'Dog'} age",
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Text(
+                                "${petAgeController.text} year${petAgeController.text != '1' ? 's' : ''} old"),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  // boarding detail############################################
+                  Row(
+                    children: [
+                      const SizedBox(width: 10),
+                      const Icon(Icons.date_range),
+                      const SizedBox(width: 20),
+                      Text(
+                        "Boarding Detail",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Table(
+                    columnWidths: const {
+                      0: IntrinsicColumnWidth(),
+                      1: FlexColumnWidth(),
+                    },
+                    defaultVerticalAlignment: TableCellVerticalAlignment.top,
+                    children: [
+                      TableRow(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.all(5.0),
+                            child: Text("Check in"),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15.0, vertical: 5.0),
+                            child: Text(DateFormat.yMEd()
+                                .add_jm()
+                                .format(dateTime['checkin']!)),
+                          ),
+                        ],
+                      ),
+                      TableRow(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.all(5.0),
+                            child: Text("Check out"),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15.0, vertical: 5.0),
+                            child: Text(DateFormat.yMEd()
+                                .add_jm()
+                                .format(dateTime['checkout']!)),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
 
-              const SizedBox(height: 30),
+                  const SizedBox(height: 30),
 
-              // button row ----------------------------------------------------
-              Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: const Size(
-                      150,
-                      50,
-                    ),
-                    side: BorderSide(
-                      color: Theme.of(context).primaryColor,
-                    ),
+                  // button row ----------------------------------------------------
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: const Size(
+                            150,
+                            50,
+                          ),
+                          side: BorderSide(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        child: const Text('Cancel'),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: const Size(
+                            150,
+                            50,
+                          ),
+                          primary: Theme.of(context).primaryColor,
+                        ),
+                        child: Text(
+                          'Confirm',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: validateForm,
+                      ),
+                    ],
                   ),
-                  child: const Text('Cancel'),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: const Size(
-                      150,
-                      50,
-                    ),
-                    primary: Theme.of(context).primaryColor,
-                  ),
-                  child: Text(
-                    'Confirm',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: validateForm,
-                ),
-              ])
+                ],
+              ),
             ],
           ),
         );
@@ -503,11 +554,11 @@ class _UserFormPageState extends State<UserFormPage> {
                 // phone number text field -----------------------------------
                 Text(
                   "Contact number",
-                  style: TextStyle(
-                    color: phoneIsValidOrFirstTime
-                        ? Theme.of(context).indicatorColor
-                        : Theme.of(context).colorScheme.error,
-                  ),
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: phoneIsValidOrFirstTime
+                            ? Theme.of(context).indicatorColor
+                            : Theme.of(context).colorScheme.error,
+                      ),
                 ),
                 const SizedBox(height: 10),
 
@@ -545,8 +596,7 @@ class _UserFormPageState extends State<UserFormPage> {
                 // pet selector ----------------------------------------------
                 Text(
                   "Choose your pet",
-                  // TODO: Change into theme font
-                  style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
 
                 const SizedBox(height: 10),
@@ -583,7 +633,7 @@ class _UserFormPageState extends State<UserFormPage> {
                 // pet detail starts here ######################################
                 Text(
                   "$catOrDog details",
-                  style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
 
                 const SizedBox(height: 10),
@@ -618,7 +668,10 @@ class _UserFormPageState extends State<UserFormPage> {
                 // check in & out starts here ##################################
 
                 // check in field ----------------------------------------------
-                const Text("Check-in date & time"),
+                Text(
+                  "Check-in date & time",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
 
                 const SizedBox(height: 5),
 
@@ -633,7 +686,10 @@ class _UserFormPageState extends State<UserFormPage> {
                 const SizedBox(height: 20),
 
                 // check out field ---------------------------------------------
-                const Text("Check-out date & time"),
+                Text(
+                  "Check-out date & time",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
 
                 const SizedBox(height: 5),
 

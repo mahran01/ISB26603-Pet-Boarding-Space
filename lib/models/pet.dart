@@ -17,4 +17,12 @@ class Pet {
     required this.petType,
     required this.age,
   });
+
+  static Pet testData() {
+    return Pet(
+      name: 'Fido',
+      petType: PetType.dog,
+      age: 5,
+    );
+  }
 }

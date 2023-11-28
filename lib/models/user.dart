@@ -21,12 +21,17 @@ class User {
     required this.pet,
   });
 
-  String get _name => name;
-  String get _address => address;
-  String get _countryCode => countryCode;
-  String get _phoneNo => phoneNo;
-  String get _email => email;
-  DateTime get _checkInDt => checkInDateTime;
-  DateTime get _departureDt => departureDateTime;
-  Pet get _pet => pet;
+  static User testData() {
+    return User(
+      name: 'John Doe',
+      address:
+          '123 Main Street, Southeast Avenue, 808 Tranquil Meadow Lane, Serenity Hills, Oakwood, NY 25818',
+      countryCode: '+10',
+      phoneNo: '555-555-5555',
+      email: 'johndoe@example.com',
+      checkInDateTime: DateTime.parse('2023-11-27 10:00:00'),
+      departureDateTime: DateTime.parse('2023-11-30 12:00:00'),
+      pet: Pet.testData(),
+    );
+  }
 }

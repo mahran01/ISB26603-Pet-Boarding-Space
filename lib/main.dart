@@ -19,7 +19,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       theme: _meowoofTheme,
       debugShowCheckedModeBanner: false,
-      home: IntroPage(),
+      home: SpaceListPage(),
       routes: {
         '/intropage': (context) => const IntroPage(),
         '/userformpage': (context) => const UserFormPage(),
@@ -36,16 +36,38 @@ final ThemeData _meowoofTheme = _buildMeowoofTheme();
 ThemeData _buildMeowoofTheme() {
   final ThemeData base = ThemeData.dark(useMaterial3: true);
   return base.copyWith(
-      primaryColor: primaryColor,
-      colorScheme: base.colorScheme.copyWith(
-        primary: primaryColor,
-        error: errorColor,
-      ),
-      textTheme: GoogleFonts.nunitoSansTextTheme(base.textTheme).copyWith(
-          headlineLarge: TextStyle(fontWeight: FontWeight.w600),
-          headlineSmall: TextStyle(fontWeight: FontWeight.w500)),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: transparentColor,
-        elevation: 0,
-      ));
+    primaryColor: primaryColor,
+    colorScheme: base.colorScheme.copyWith(
+      primary: primaryColor,
+      error: errorColor,
+    ),
+    textTheme: _buildMeowoofTextTheme(
+      GoogleFonts.nunitoSansTextTheme(base.textTheme),
+    ),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: transparentColor,
+      elevation: 0,
+    ),
+  );
+}
+
+TextTheme _buildMeowoofTextTheme(TextTheme base) {
+  return base.copyWith(
+    headlineLarge: base.headlineLarge!.copyWith(
+      fontWeight: FontWeight.w900,
+    ),
+    headlineSmall: base.headlineSmall!.copyWith(
+      fontWeight: FontWeight.w900,
+    ),
+    titleMedium: base.titleMedium!.copyWith(
+      fontWeight: FontWeight.bold,
+    ),
+    bodyLarge: base.bodyLarge!.copyWith(
+      fontWeight: FontWeight.bold,
+    ),
+    labelLarge: base.labelLarge!.copyWith(
+      fontWeight: FontWeight.w900,
+      color: Colors.grey[100],
+    ),
+  );
 }

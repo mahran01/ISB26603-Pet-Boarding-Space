@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:pet_boarding_space/components/my_table.dart';
+import 'package:pet_boarding_space/components/rating_dialog.dart';
 import 'package:pet_boarding_space/models/boarding_space.dart';
-import 'package:pet_boarding_space/models/pet.dart';
 import 'package:pet_boarding_space/models/user.dart';
 import 'package:pet_boarding_space/data/data.dart';
-import 'package:pet_boarding_space/models/discount.dart';
 
 class PaymentPage extends StatefulWidget {
   const PaymentPage({super.key});
@@ -19,23 +20,25 @@ class _PaymentPageState extends State<PaymentPage> {
   late BoardingSpace bs;
   late double totalRate;
   late bool discountAvailable;
+  late bool discountErrDisplay;
   late double discount;
   late double totalPayment;
 
   void applyDiscount() {
+    FocusManager.instance.primaryFocus?.unfocus();
     setState(() {
-      String inputCode = discountController.text;
+      String inputCode = discountController.text.toUpperCase();
       bool isValid = AssignedValues.discounts.containsKey(inputCode);
       if (isValid) {
         discountAvailable = true;
         discount = AssignedValues.discounts[inputCode]!.getDiscount(totalRate);
         totalPayment = totalRate - discount;
-        print(totalPayment);
       } else {
         discountAvailable = false;
         discount = 0;
         totalPayment = totalRate;
       }
+      discountErrDisplay = !discountAvailable;
     });
   }
 
@@ -61,6 +64,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
     totalRate = 0.0;
     discountAvailable = false;
+    discountErrDisplay = false;
     discount = 0.0;
     totalPayment = 0.0;
   }
@@ -76,395 +80,189 @@ class _PaymentPageState extends State<PaymentPage> {
     totalRate = calculateRate(user, bs);
     totalPayment = totalRate - discount;
 
+    Row buildTextHeader(icon, String text) {
+      return Row(
+        children: [
+          Padding(padding: const EdgeInsets.all(18.0), child: icon),
+          Text(text, style: Theme.of(context).textTheme.titleMedium),
+        ],
+      );
+    }
+
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text("Payment detail"),
+      ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                    child: Icon(Icons.person),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            buildTextHeader(
+              const Icon(Icons.person),
+              "User detail",
+            ),
+            MyTable(data: {
+              "Name": user.name,
+              "Address": user.address,
+              "Phone no": user.countryCode + user.phoneNo,
+              "Email": user.email,
+            }),
+            buildTextHeader(
+                ImageIcon(
+                  AssetImage(
+                    "lib/images/${user.pet.petType.value.toLowerCase()}_small_white.png",
                   ),
-                  Text(
-                    "User detail",
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w900),
-                  ),
-                ],
-              ),
-              Table(
-                columnWidths: const {
-                  0: IntrinsicColumnWidth(),
-                  1: FlexColumnWidth(),
-                },
-                defaultVerticalAlignment: TableCellVerticalAlignment.top,
-                children: [
-                  TableRow(
-                    children: [
-                      // Padding(
-                      //   padding: const EdgeInsets.all(8.0),
-                      //   child: Text("Name"),
-                      // ),
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text("Name"),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text(user.name),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text("Address"),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text(user.address),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text("Phone no."),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text(user.countryCode + user.phoneNo),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text("Email"),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text(user.email),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(height: 25),
-              Row(
-                children: [
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
-                    child: Image.asset(
-                      "lib/images/${user.pet.petType.value.toLowerCase()}_small_white.png",
-                      height: 18,
-                    ),
-                  ),
-                  Text(
-                    "${user.pet.petType.value} detail",
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w900),
-                  ),
-                ],
-              ),
-              Table(
-                columnWidths: const {
-                  0: IntrinsicColumnWidth(),
-                  1: FlexColumnWidth(),
-                },
-                defaultVerticalAlignment: TableCellVerticalAlignment.top,
-                children: [
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text("${user.pet.petType.value} name"),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text(user.pet.name),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text(
-                          "${user.pet.petType.value} age",
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text(
-                            "${user.pet.age} year${user.pet.age != '1' ? 's' : ''} old"),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(height: 25),
-              Row(
-                children: [
-                  const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                    child: Icon(Icons.date_range),
-                  ),
-                  Text(
-                    "Boarding Detail",
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w900),
-                  ),
-                ],
-              ),
-              Table(
-                columnWidths: const {
-                  0: IntrinsicColumnWidth(),
-                  1: FlexColumnWidth(),
-                },
-                defaultVerticalAlignment: TableCellVerticalAlignment.top,
-                children: [
-                  TableRow(
-                    children: [
-                      // Padding(
-                      //   padding: const EdgeInsets.all(8.0),
-                      //   child: Text("Name"),
-                      // ),
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text("Check in"),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text(user.checkInDateTime.toString()),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text("Check out"),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text(user.departureDateTime.toString()),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(height: 25),
-              Row(
-                children: [
-                  const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                    child: Icon(Icons.house),
-                  ),
-                  Text(
-                    "Boarding space information",
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w900),
-                  ),
-                ],
-              ),
-              SizedBox(height: 5),
-              Row(
+                ),
+                "${user.pet.petType.value} detail"),
+            MyTable(data: {
+              "${user.pet.petType.value} name": user.pet.name,
+              "${user.pet.petType.value} age":
+                  "${user.pet.age} year${user.pet.age != 1 ? 's' : ''} old",
+            }),
+            buildTextHeader(
+              const Icon(Icons.date_range),
+              "Boarding Detail",
+            ),
+            MyTable(data: {
+              "Check-in":
+                  DateFormat.yMEd().add_jm().format(user.checkInDateTime),
+              "Check-out":
+                  DateFormat.yMEd().add_jm().format(user.departureDateTime),
+            }),
+            buildTextHeader(
+              const Icon(Icons.house),
+              "Boarding space information",
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 100,
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      image: DecorationImage(
+                        image: AssetImage(bs.imageUrl),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    height: 101,
                     width: 150,
-                    child: Image.asset(
-                      bs.imageUrl,
-                      fit: BoxFit.cover,
-                    ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: Table(
-                      columnWidths: const {
-                        0: IntrinsicColumnWidth(),
-                        1: IntrinsicColumnWidth(),
-                      },
-                      defaultVerticalAlignment: TableCellVerticalAlignment.top,
-                      children: [
-                        TableRow(
-                          children: [
-                            // Padding(
-                            //   padding: const EdgeInsets.all(8.0),
-                            //   child: Text("Name"),
-                            // ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 5.0,
-                                bottom: 5.0,
-                              ),
-                              child: Text("Name"),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 5.0,
-                                bottom: 5.0,
-                              ),
-                              child: Text(bs.name),
-                            ),
-                          ],
-                        ),
-                        TableRow(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Text("Hourly"),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Text(bs.hourlyRates.toString()),
-                            ),
-                          ],
-                        ),
-                        TableRow(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Text("Daily"),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Text(bs.dailyRates.toString()),
-                            ),
-                          ],
-                        ),
-                      ],
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: MyTable(data: {
+                        "Name": bs.name,
+                        "Hourly": "RM ${bs.hourlyRates.toStringAsFixed(2)}",
+                        "Daily": "RM ${bs.dailyRates.toStringAsFixed(2)}",
+                      }, padding: 7.0),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 35),
-              Row(
+            ),
+            const SizedBox(height: 10),
+            buildTextHeader(
+              const Icon(Icons.payment),
+              "Payment Detail",
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 22.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                    child: Icon(Icons.payment),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          height: 50,
+                          child: TextField(
+                            controller: discountController,
+                            scrollPadding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom +
+                                  16 * 4,
+                            ),
+                            maxLines: null,
+                            keyboardType: TextInputType.text,
+                            decoration: const InputDecoration(
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 2),
+                              labelText: 'Discount',
+                              hintText: 'Enter discount code ...',
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      SizedBox(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            fixedSize: const Size(
+                              110,
+                              50,
+                            ),
+                            side: BorderSide(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          onPressed: applyDiscount,
+                          child: const Text('Apply'),
+                        ),
+                      ),
+                    ],
                   ),
+                  const SizedBox(height: 5),
                   Text(
-                    "Payment Detail",
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w900),
+                    "Invalid discount code",
+                    style: discountErrDisplay
+                        ? Theme.of(context).textTheme.labelMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.error)
+                        : const TextStyle(height: 0, fontSize: 0),
                   ),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  SizedBox(
-                    height: 60,
-                    width: 210,
-                    child: TextField(
-                      controller: discountController,
-                      scrollPadding: EdgeInsets.only(
-                        bottom:
-                            MediaQuery.of(context).viewInsets.bottom + 16 * 4,
-                      ),
-                      maxLines: null,
-                      keyboardType: TextInputType.text,
-                      decoration: const InputDecoration(
-                        labelText: 'Discount',
-                        hintText: 'Enter discount code ...',
-                      ),
+                  const SizedBox(height: 25),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Total Rate:'),
+                            Text('RM ${totalRate.toStringAsFixed(2)}'),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          height: discountAvailable ? null : 0,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('Discount:'),
+                              Text('- RM ${discount.toStringAsFixed(2)}'),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Total Payment:',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                            Text(
+                              'RM ${totalPayment.toStringAsFixed(2)}',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                  SizedBox(width: 30),
-                  SizedBox(
+                  const SizedBox(height: 40),
+                  Center(
                     child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: const Size(
-                          110,
-                          50,
-                        ),
-                        side: BorderSide(
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                      child: Text('Apply'),
-                      onPressed: applyDiscount,
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 20, top: 45),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Total Rate:'),
-                        Text('RM ${totalRate.toStringAsFixed(2)}'),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    SizedBox(
-                      height: discountAvailable ? null : 0,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Discount:'),
-                          Text('- RM ${discount.toStringAsFixed(2)}'),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Total Payment:',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w900),
-                        ),
-                        Text(
-                          'RM ${totalPayment.toStringAsFixed(2)}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w900),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 40),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         fixedSize: const Size(
                           200,
@@ -472,7 +270,7 @@ class _PaymentPageState extends State<PaymentPage> {
                         ),
                         primary: Theme.of(context).primaryColor,
                       ),
-                      child: Text(
+                      child: const Text(
                         'Rate',
                         style: TextStyle(color: Colors.white),
                       ),
@@ -483,92 +281,16 @@ class _PaymentPageState extends State<PaymentPage> {
                             return RatingDialog();
                           },
                         );
-                      }),
+                      },
+                    ),
+                  ),
                 ],
               ),
-              SizedBox(height: 100)
-            ],
-          ),
+            ),
+            const SizedBox(height: 50)
+          ],
         ),
       ),
-    );
-  }
-}
-
-class RatingDialog extends StatefulWidget {
-  @override
-  _RatingDialogState createState() => _RatingDialogState();
-}
-
-class _RatingDialogState extends State<RatingDialog> {
-  int _stars = 0;
-
-  Widget _buildStar(int starCount) {
-    return InkWell(
-      child: Icon(
-        Icons.star,
-        // size: 30.0,
-        color: _stars >= starCount ? Colors.orange : Colors.grey,
-      ),
-      onTap: () {
-        setState(() {
-          _stars = starCount;
-        });
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Center(
-        child: Text('Rate your experience'),
-      ),
-      content: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          _buildStar(1),
-          _buildStar(2),
-          _buildStar(3),
-          _buildStar(4),
-          _buildStar(5),
-        ],
-      ),
-      actions: <Widget>[
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            fixedSize: const Size(
-              110,
-              50,
-            ),
-            side: BorderSide(
-              color: Theme.of(context).primaryColor,
-            ),
-          ),
-          child: Text('CANCEL'),
-          onPressed: Navigator.of(context).pop,
-        ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            fixedSize: const Size(
-              110,
-              50,
-            ),
-            primary: Theme.of(context).primaryColor,
-          ),
-          child: Text(
-            'NEXT',
-            style: TextStyle(color: Colors.white),
-          ),
-          onPressed: () {
-            Navigator.of(context).pop(_stars);
-            Navigator.pushNamed(
-              context,
-              "/intropage",
-            );
-          },
-        )
-      ],
     );
   }
 }
