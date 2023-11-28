@@ -143,10 +143,10 @@ class _SpaceListPageState extends State<SpaceListPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: reset change
-    User user = User.testData();
+    // TODO: reset change test
+    // User user = User.testData();
 
-    // User user = ModalRoute.of(context)!.settings.arguments as User;
+    User user = ModalRoute.of(context)!.settings.arguments as User;
     PetType userPet = user.pet.petType;
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -162,46 +162,43 @@ class _SpaceListPageState extends State<SpaceListPage> {
         ),
       ),
       body: SafeArea(
-        child: Container(
-          child: Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 35),
-                Text(
-                  'Explore Your Pet Space',
-                  style: Theme.of(context).textTheme.headlineLarge,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 35),
+              Text(
+                'Explore Your Pet Space',
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
+              const SizedBox(height: 5),
+              Text(
+                'Pick your pet favorite space',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              const SizedBox(height: 50),
+              Expanded(
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: AssignedValues.boardingSpaces.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    BoardingSpace bs = AssignedValues.boardingSpaces[index];
+                    if (userPet == bs.petType) {
+                      return GestureDetector(
+                        onTap: () => spaceModalBottomSheet(context, user, bs),
+                        child: BoardingSpaceCard(boardingSpace: bs),
+                      );
+                    } else {
+                      return const SizedBox();
+                    }
+                  },
                 ),
-                const SizedBox(height: 5),
-                Text(
-                  'Pick your pet favorite space',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                const SizedBox(height: 50),
-                Expanded(
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemCount: AssignedValues.boardingSpaces.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      BoardingSpace bs = AssignedValues.boardingSpaces[index];
-                      if (userPet == bs.petType) {
-                        return GestureDetector(
-                          onTap: () => spaceModalBottomSheet(context, user, bs),
-                          child: BoardingSpaceCard(boardingSpace: bs),
-                        );
-                      } else {
-                        return const SizedBox();
-                      }
-                    },
-                  ),
-                ),
-                const SizedBox(height: 10),
-              ],
-            ),
+              ),
+              const SizedBox(height: 10),
+            ],
           ),
         ),
       ),

@@ -19,7 +19,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       theme: _meowoofTheme,
       debugShowCheckedModeBanner: false,
-      home: SpaceListPage(),
+      home: const UserFormPage(),
       routes: {
         '/intropage': (context) => const IntroPage(),
         '/userformpage': (context) => const UserFormPage(),
