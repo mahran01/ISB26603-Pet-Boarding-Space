@@ -8,18 +8,21 @@ class AssignedValues {
         name: 'Cat Deluxe Cabin',
         imageUrl: 'lib/images/CatDeluxeCabin.jpeg',
         petType: PetType.cat,
+        features: ['Meal', 'Private Room', 'Bathing', 'Gromming'],
         hourlyRates: 10.00,
         dailyRates: 35.00),
     BoardingSpace(
         name: 'Cat Premium Suite',
         imageUrl: 'lib/images/CatPremiumSuite.jpg',
         petType: PetType.cat,
+        features: ['Meal', 'Bathing', 'Share Room', 'Playground'],
         hourlyRates: 12.00,
         dailyRates: 40.00),
     BoardingSpace(
         name: 'Cat Cozy Corner',
         imageUrl: 'lib/images/CatCozyConer.png',
         petType: PetType.cat,
+        features: ['Meal', 'Share Room', 'Bathing', 'Open Area'],
         hourlyRates: 8.00,
         dailyRates: 30.00),
     // BoardingSpace(
@@ -31,18 +34,21 @@ class AssignedValues {
         name: 'Dog Deluxe Cabin',
         imageUrl: 'lib/images/DogDeluxeCabin.jpg',
         petType: PetType.dog,
+        features: ['Meal', 'Share Room', 'Playground'],
         hourlyRates: 15.00,
         dailyRates: 45.00),
     BoardingSpace(
         name: 'Dog Premium Suite',
         imageUrl: 'lib/images/DogPremiumSuite.webp',
         petType: PetType.dog,
+        features: ['Meal', 'private Room', 'Entertainment', 'Bathing'],
         hourlyRates: 20.00,
         dailyRates: 55.00),
     BoardingSpace(
         name: 'Dog Cozy Corner',
         imageUrl: 'lib/images/DogCozyConer.jpg',
         petType: PetType.dog,
+        features: ['Meal', 'Share Room', 'Open Area'],
         hourlyRates: 12.00,
         dailyRates: 38.00),
     // BoardingSpace(

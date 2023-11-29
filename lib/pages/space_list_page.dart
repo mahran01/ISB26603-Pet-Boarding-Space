@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pet_boarding_space/components/boarding_space_card.dart';
 import 'package:pet_boarding_space/models/boarding_space.dart';
 import 'package:pet_boarding_space/models/pet.dart';
@@ -19,7 +20,7 @@ class _SpaceListPageState extends State<SpaceListPage> {
       isScrollControlled: true,
       context: context,
       builder: (BuildContext context) => Container(
-        height: 510,
+        height: 550,
         width: double.infinity,
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.only(
@@ -54,7 +55,7 @@ class _SpaceListPageState extends State<SpaceListPage> {
             ),
             Column(
               children: [
-                const SizedBox(height: 280),
+                const SizedBox(height: 250),
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
@@ -72,64 +73,113 @@ class _SpaceListPageState extends State<SpaceListPage> {
                       ),
                     ),
                     width: double.infinity,
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 5),
-                        Text(
-                          bs.name,
-                          style: Theme.of(context).textTheme.headlineLarge,
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                            'Price per hour: RM ${bs.hourlyRates.toStringAsFixed(2)}'),
-                        const SizedBox(height: 5),
-                        Text(
-                            'Price per day: RM ${bs.dailyRates.toStringAsFixed(2)}'),
-                        const SizedBox(height: 40),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                fixedSize: const Size(
-                                  150,
-                                  50,
-                                ),
-                                side: BorderSide(
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              ),
-                              child: const Text('Cancel'),
-                              onPressed: () => Navigator.pop(context),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 20),
+                          Text(
+                            bs.name,
+                            style: GoogleFonts.jetBrainsMono(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white.withOpacity(0.75),
                             ),
-                            const SizedBox(width: 10),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                fixedSize: const Size(
-                                  150,
-                                  50,
-                                ),
-                                primary: Theme.of(context).primaryColor,
-                              ),
-                              child: const Text(
-                                'Book',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                Navigator.pushNamed(
-                                  context,
-                                  "/paymentpage",
-                                  arguments: {
-                                    "User": user,
-                                    "BoardingSpace": bs
-                                  },
-                                );
-                              },
+                          ),
+                          SizedBox(height: 15),
+                          Container(
+                            width: double.infinity,
+                            height: 2,
+                            color: Colors.white.withOpacity(0.3),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'RM ${bs.hourlyRates.toStringAsFixed(2)}/hour',
+                            style: GoogleFonts.jetBrainsMono(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white.withOpacity(0.75),
                             ),
-                          ],
-                        )
-                      ],
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            'RM ${bs.dailyRates.toStringAsFixed(2)}/day',
+                            style: GoogleFonts.jetBrainsMono(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white.withOpacity(0.75),
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                          Container(
+                            width: double.infinity,
+                            height: 2,
+                            color: Colors.white.withOpacity(0.3),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            'Features:',
+                            style: Theme.of(context).textTheme.labelLarge,
+                          ),
+                          const SizedBox(height: 5),
+                          Wrap(
+                            children: [
+                              for (int i = 0; i < bs.features.length; i++)
+                                Wrap(
+                                  children: [
+                                    Text(bs.features[i]),
+                                    const SizedBox(width: 15),
+                                  ],
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  fixedSize: const Size(
+                                    150,
+                                    50,
+                                  ),
+                                  side: BorderSide(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                ),
+                                child: const Text('Cancel'),
+                                onPressed: () => Navigator.pop(context),
+                              ),
+                              const SizedBox(width: 10),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  fixedSize: const Size(
+                                    150,
+                                    50,
+                                  ),
+                                  primary: Theme.of(context).primaryColor,
+                                ),
+                                child: const Text(
+                                  'Book',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  Navigator.pushNamed(
+                                    context,
+                                    "/paymentpage",
+                                    arguments: {
+                                      "User": user,
+                                      "BoardingSpace": bs
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -173,7 +223,6 @@ class _SpaceListPageState extends State<SpaceListPage> {
                 'Explore Your Pet Space',
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
-              const SizedBox(height: 5),
               Text(
                 'Pick your pet favorite space',
                 style: Theme.of(context).textTheme.bodyLarge,
