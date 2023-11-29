@@ -19,7 +19,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       theme: _meowoofTheme,
       debugShowCheckedModeBanner: false,
-      home: const UserFormPage(),
+      home: const IntroPage(),
       routes: {
         '/intropage': (context) => const IntroPage(),
         '/userformpage': (context) => const UserFormPage(),
@@ -47,6 +47,16 @@ ThemeData _buildMeowoofTheme() {
     appBarTheme: const AppBarTheme(
       backgroundColor: transparentColor,
       elevation: 0,
+    ),
+    inputDecorationTheme: base.inputDecorationTheme.copyWith(
+      hintStyle: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.normal,
+      ),
+      labelStyle: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.normal,
+      ),
     ),
   );
 }
