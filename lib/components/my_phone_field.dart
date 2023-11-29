@@ -4,13 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pet_boarding_space/data/country.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-class MyDropDownList extends StatefulWidget {
+class MyPhonePicker extends StatefulWidget {
   final TextEditingController countryCodeController;
   final TextEditingController phoneNoController;
   final String? Function(String?)? phoneNoValidator;
   final bool isValid;
 
-  const MyDropDownList({
+  const MyPhonePicker({
     super.key,
     required this.countryCodeController,
     required this.phoneNoController,
@@ -19,10 +19,10 @@ class MyDropDownList extends StatefulWidget {
   });
 
   @override
-  State<MyDropDownList> createState() => _MyDropDownListState();
+  State<MyPhonePicker> createState() => _MyPhonePickerState();
 }
 
-class _MyDropDownListState extends State<MyDropDownList> {
+class _MyPhonePickerState extends State<MyPhonePicker> {
   late bool countryListOpen;
   late double countryListHeight;
   late double countryListButtonArrowAngle;
@@ -152,6 +152,7 @@ class _MyDropDownListState extends State<MyDropDownList> {
               // phone number textfield ****************************************
               Expanded(
                 child: TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: widget.phoneNoController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(

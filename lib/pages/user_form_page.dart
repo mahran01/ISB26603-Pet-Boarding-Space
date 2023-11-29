@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_boarding_space/components/date_time_picker.dart';
-import 'package:pet_boarding_space/components/drop_down_list.dart';
+import 'package:pet_boarding_space/components/my_phone_field.dart';
+import 'package:pet_boarding_space/components/my_table.dart';
 import 'package:pet_boarding_space/components/pet_card.dart';
 import 'package:pet_boarding_space/models/pet.dart';
 import 'package:pet_boarding_space/models/user.dart';
@@ -22,6 +23,7 @@ class _UserFormPageState extends State<UserFormPage> {
   late bool dogIsSelected;
   late String phoneErrorMessage;
   late bool timeIsValid;
+  late String timeErrorMessage;
   late bool formIsValid;
   final Map<String, DateTime> dateTime = {
     "checkin": DateTime.now(),
@@ -40,10 +42,12 @@ class _UserFormPageState extends State<UserFormPage> {
   late TextEditingController checkoutDateController;
   late TextEditingController checkoutTimeController;
 
-  bool durationTooShort(Duration duration) {
-    return !(duration.inDays > 0 ||
-        duration.inHours > 0 ||
-        duration.inMinutes >= 30);
+  Duration getDuration() {
+    return dateTime['checkout']!.difference(dateTime['checkin']!);
+  }
+
+  bool durationTooShort() {
+    return getDuration().inMinutes < 30;
   }
 
   void chooseCat() {
@@ -115,6 +119,20 @@ class _UserFormPageState extends State<UserFormPage> {
     return null;
   }
 
+  void validateTime() {
+    DateTime currTime = DateTime.now().add(const Duration(minutes: 5));
+    timeIsValid = false;
+    if (dateTime["checkin"]!.isBefore(currTime)) {
+      timeErrorMessage = "Invalid check-in time";
+    } else if (getDuration().inMinutes < 0) {
+      timeErrorMessage = "Check-out should be after check-in";
+    } else if (getDuration().inMinutes < 30) {
+      timeErrorMessage = "Duration should be more than 30 minutes";
+    } else {
+      timeIsValid = true;
+    }
+  }
+
   void setFormIsValid() {
     final bool name = nameController.text.isNotEmpty;
     final bool address = addressController.text.isNotEmpty;
@@ -140,270 +158,14 @@ class _UserFormPageState extends State<UserFormPage> {
         checkoutTime);
   }
 
+  void clearWhitespace() {
+    nameController.text = nameController.text.trim();
+    addressController.text = addressController.text.trim();
+    petNameController.text = petNameController.text.trim();
+  }
+
   void confirmModalBottomSheet(BuildContext context) {
-    showModalBottomSheet<dynamic>(
-      isScrollControlled: true,
-      context: context,
-      builder: (BuildContext bc) {
-        return Container(
-          padding: const EdgeInsets.all(20),
-          child: Wrap(
-            children: [
-              Center(
-                child: Container(
-                  height: 4,
-                  width: 40,
-                  decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(10)),
-                ),
-              ),
-              Column(
-                children: [
-                  const SizedBox(height: 20),
-                  // user detail ###############################################
-                  Row(
-                    children: [
-                      const SizedBox(width: 10),
-                      const Icon(Icons.person),
-                      const SizedBox(width: 20),
-                      Text(
-                        "User detail",
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(width: 20),
-                  Table(
-                    columnWidths: const {
-                      0: IntrinsicColumnWidth(),
-                      1: FlexColumnWidth(),
-                    },
-                    defaultVerticalAlignment: TableCellVerticalAlignment.top,
-                    children: [
-                      TableRow(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5.0),
-                            child: Text("Name"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Text(nameController.text),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5.0),
-                            child: Text("Address"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Text(addressController.text),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5.0),
-                            child: Text("Phone no."),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Text(countryCodeController.text +
-                                phoneNoController.text),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5.0),
-                            child: Text("Email"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Text(emailController.text),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  // pet detail ################################################
-                  Row(
-                    children: [
-                      const SizedBox(width: 10),
-                      Image.asset(
-                        "lib/images/${catIsSelected ? 'cat' : 'dog'}_small_white.png",
-                        height: 18,
-                      ),
-                      const SizedBox(width: 24),
-                      Text(
-                        "${catIsSelected ? 'Cat' : 'Dog'} detail",
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Table(
-                    columnWidths: const {
-                      0: IntrinsicColumnWidth(),
-                      1: FlexColumnWidth(),
-                    },
-                    defaultVerticalAlignment: TableCellVerticalAlignment.top,
-                    children: [
-                      TableRow(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child:
-                                Text("${catIsSelected ? 'Cat' : 'Dog'} name"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Text(petNameController.text),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Text(
-                              "${catIsSelected ? 'Cat' : 'Dog'} age",
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Text(
-                                "${petAgeController.text} year${petAgeController.text != '1' ? 's' : ''} old"),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  // boarding detail############################################
-                  Row(
-                    children: [
-                      const SizedBox(width: 10),
-                      const Icon(Icons.date_range),
-                      const SizedBox(width: 20),
-                      Text(
-                        "Boarding Detail",
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Table(
-                    columnWidths: const {
-                      0: IntrinsicColumnWidth(),
-                      1: FlexColumnWidth(),
-                    },
-                    defaultVerticalAlignment: TableCellVerticalAlignment.top,
-                    children: [
-                      TableRow(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5.0),
-                            child: Text("Check in"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15.0, vertical: 5.0),
-                            child: Text(DateFormat.yMEd()
-                                .add_jm()
-                                .format(dateTime['checkin']!)),
-                          ),
-                        ],
-                      ),
-                      TableRow(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.all(5.0),
-                            child: Text("Check out"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15.0, vertical: 5.0),
-                            child: Text(DateFormat.yMEd()
-                                .add_jm()
-                                .format(dateTime['checkout']!)),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  // button row ----------------------------------------------------
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          fixedSize: const Size(
-                            150,
-                            50,
-                          ),
-                          side: BorderSide(
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                        child: const Text('Cancel'),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                      const SizedBox(width: 10),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          fixedSize: const Size(
-                            150,
-                            50,
-                          ),
-                          primary: Theme.of(context).primaryColor,
-                        ),
-                        child: Text(
-                          'Confirm',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: validateForm,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void validateForm() {
-    setState(() {
-      Navigator.pop(context);
-      bool petIsSelected = catIsSelected || dogIsSelected;
-      DateTime checkin = dateTime['checkin']!;
-      DateTime checkout = dateTime['checkout']!;
-      timeIsValid =
-          checkin.isAfter(DateTime.now()) && checkin.isBefore(checkout);
-      if (timeIsValid) {
-        Duration duration = checkout.difference(checkin);
-        timeIsValid = timeIsValid && !durationTooShort(duration);
-      }
-      if (_formKey.currentState!.validate() && petIsSelected && timeIsValid) {
-        submitForm();
-      } else {}
-    });
-  }
-
-  void submitForm() {
+    clearWhitespace();
     String name;
     String address;
     String countryCode;
@@ -443,6 +205,137 @@ class _UserFormPageState extends State<UserFormPage> {
       pet: pet,
     );
 
+    Row buildTextHeader(icon, String text) {
+      return Row(
+        children: [
+          Padding(padding: const EdgeInsets.all(18.0), child: icon),
+          Text(text, style: Theme.of(context).textTheme.titleMedium),
+        ],
+      );
+    }
+
+    showModalBottomSheet<dynamic>(
+      isScrollControlled: true,
+      context: context,
+      builder: (BuildContext bc) {
+        return Container(
+          padding: const EdgeInsets.all(20),
+          child: Wrap(
+            children: [
+              Center(
+                child: Container(
+                  height: 4,
+                  width: 40,
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(10)),
+                ),
+              ),
+              Column(
+                children: [
+                  const SizedBox(height: 20),
+                  // user detail ###############################################
+                  buildTextHeader(
+                    const Icon(Icons.person),
+                    "User detail",
+                  ),
+                  MyTable(
+                    data: {
+                      "Name": user.name,
+                      "Address": user.address,
+                      "Phone no": user.countryCode + user.phoneNo,
+                      "Email": user.email,
+                    },
+                    padding: 10,
+                  ),
+                  buildTextHeader(
+                      ImageIcon(
+                        AssetImage(
+                          "lib/images/${user.pet.petType.value.toLowerCase()}_small_white.png",
+                        ),
+                      ),
+                      "${user.pet.petType.value} detail"),
+                  MyTable(
+                    data: {
+                      "${user.pet.petType.value} name": user.pet.name,
+                      "${user.pet.petType.value} age":
+                          "${user.pet.age} year${user.pet.age != 1 ? 's' : ''} old",
+                    },
+                    padding: 10,
+                  ),
+                  buildTextHeader(
+                    const Icon(Icons.date_range),
+                    "Boarding Detail",
+                  ),
+                  MyTable(
+                    data: {
+                      "Check-in": DateFormat.yMEd()
+                          .add_jm()
+                          .format(user.checkInDateTime),
+                      "Check-out": DateFormat.yMEd()
+                          .add_jm()
+                          .format(user.departureDateTime),
+                    },
+                    padding: 10,
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  // button row ----------------------------------------------------
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: const Size(
+                            150,
+                            50,
+                          ),
+                          side: BorderSide(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        child: const Text('Cancel'),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: const Size(
+                            150,
+                            50,
+                          ),
+                          primary: Theme.of(context).primaryColor,
+                        ),
+                        child: const Text(
+                          'Confirm',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () => validateForm(user),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void validateForm(User user) {
+    setState(() {
+      Navigator.pop(context);
+      bool petIsSelected = catIsSelected || dogIsSelected;
+      validateTime();
+      if (_formKey.currentState!.validate() && petIsSelected && timeIsValid) {
+        submitForm(user);
+      }
+    });
+  }
+
+  void submitForm(User user) {
     Navigator.pushNamed(context, "/spacelistpage", arguments: user);
   }
 
@@ -478,6 +371,7 @@ class _UserFormPageState extends State<UserFormPage> {
     dogIsSelected = false;
     phoneErrorMessage = "";
     timeIsValid = true;
+    timeErrorMessage = "";
     formIsValid = false;
   }
 
@@ -499,11 +393,7 @@ class _UserFormPageState extends State<UserFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    String catOrDog = catIsSelected
-        ? "Cat"
-        : dogIsSelected
-            ? "Dog"
-            : "Pet";
+    String catOrDog = catIsSelected ? "Cat" : (dogIsSelected ? "Dog" : "Pet");
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -519,7 +409,11 @@ class _UserFormPageState extends State<UserFormPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // user detail starts here ###################################
-
+                const SizedBox(height: 20),
+                Text(
+                  "User details",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
                 // name text field -------------------------------------------
                 TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -537,6 +431,7 @@ class _UserFormPageState extends State<UserFormPage> {
 
                 // address text field ----------------------------------------
                 TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: addressController,
                   scrollPadding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).viewInsets.bottom + 16 * 4,
@@ -562,7 +457,7 @@ class _UserFormPageState extends State<UserFormPage> {
                 ),
                 const SizedBox(height: 10),
 
-                MyDropDownList(
+                MyPhonePicker(
                   countryCodeController: countryCodeController,
                   phoneNoController: phoneNoController,
                   phoneNoValidator: phoneNoValidator,
@@ -581,6 +476,7 @@ class _UserFormPageState extends State<UserFormPage> {
 
                 // email text field ------------------------------------------
                 TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: emailController,
                   scrollPadding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).viewInsets.bottom - 16 * 4,
@@ -639,6 +535,7 @@ class _UserFormPageState extends State<UserFormPage> {
                 const SizedBox(height: 10),
                 // pet name text field -----------------------------------------
                 TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: petNameController,
                   scrollPadding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).viewInsets.bottom + 16 * 4,
@@ -653,6 +550,7 @@ class _UserFormPageState extends State<UserFormPage> {
 
                 // pet age text field ------------------------------------------
                 TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   keyboardType: TextInputType.number,
                   controller: petAgeController,
                   scrollPadding: EdgeInsets.only(
@@ -705,12 +603,7 @@ class _UserFormPageState extends State<UserFormPage> {
 
                 // time error message ------------------------------------------
                 Text(
-                  dateTime['checkin']!.isBefore(DateTime.now())
-                      ? "Invalid check-in time"
-                      : durationTooShort(dateTime['checkout']!
-                              .difference(dateTime['checkin']!))
-                          ? 'Duration should be longer than 30 minutes'
-                          : 'Invalid check-in and check-out',
+                  phoneErrorMessage,
                   style: !timeIsValid
                       ? Theme.of(context)
                           .textTheme
