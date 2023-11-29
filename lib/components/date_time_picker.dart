@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class MyDateTimePicker extends StatefulWidget {
   final TextEditingController dateController;
@@ -24,54 +24,62 @@ class MyDateTimePicker extends StatefulWidget {
 class _MyDateTimePickerState extends State<MyDateTimePicker> {
   DateTime? pickedDate = DateTime.now();
   TimeOfDay? pickedTime = TimeOfDay.now();
+
+  DateTime updateDate(DateTime oldDate, DateTime newDate) {
+    oldDate = oldDate.toLocal();
+    newDate = newDate.toLocal();
+    return DateTime(
+      newDate.year,
+      newDate.month,
+      newDate.day,
+      oldDate.hour,
+      oldDate.minute,
+    );
+  }
+
+  DateTime updateTime(DateTime oldTime, TimeOfDay newTime) {
+    oldTime = oldTime.toLocal();
+    return DateTime(
+      oldTime.year,
+      oldTime.month,
+      oldTime.day,
+      newTime.hour,
+      newTime.minute,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        padding: const EdgeInsets.all(20),
         child: Row(
           children: [
             Expanded(
               child: GestureDetector(
                 onTap: () async {
                   pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: pickedDate == null ||
-                              pickedDate!.isBefore(widget.firstDate)
-                          ? widget.firstDate
-                          : pickedDate!,
-                      firstDate: widget.firstDate,
-                      lastDate: DateTime(2101));
+                    context: context,
+                    initialDate: pickedDate == null ||
+                            pickedDate!.isBefore(widget.firstDate)
+                        ? widget.firstDate
+                        : pickedDate!,
+                    firstDate: widget.firstDate,
+                    lastDate: widget.firstDate.add(
+                      const Duration(days: 365),
+                    ),
+                  );
 
                   if (pickedDate != null && pickedDate != DateTime.now()) {
                     setState(() {
-                      DateTime newDateTime = pickedDate!.toLocal();
-                      DateTime oldDateTime =
-                          widget.map[widget.mapKey] ?? DateTime(0);
-                      widget.map.update(
-                        widget.mapKey,
-                        (v) => DateTime(
-                            newDateTime.year,
-                            newDateTime.month,
-                            newDateTime.day,
-                            oldDateTime.hour,
-                            oldDateTime.minute,
-                            oldDateTime.second,
-                            oldDateTime.millisecond,
-                            oldDateTime.microsecond),
-                      );
+                      DateTime oldDate = widget.map[widget.mapKey]!;
+                      DateTime newDate = updateDate(oldDate, pickedDate!);
 
-                      widget.map.update(widget.mapKey, (v) => pickedDate!);
-                      widget.dateController.text = "${[
-                        'Mon',
-                        'Tue',
-                        'Wed',
-                        'Thu',
-                        'Fri',
-                        'Sat',
-                        'Sun'
-                      ][pickedDate!.weekday - 1]}, ${pickedDate!.day}/${pickedDate!.month}/${pickedDate!.year}";
+                      widget.map.update(widget.mapKey, (v) => newDate);
+
+                      widget.dateController.text =
+                          DateFormat.yMEd().format(newDate);
                     });
                   }
                 },
@@ -82,9 +90,7 @@ class _MyDateTimePickerState extends State<MyDateTimePicker> {
                     children: [
                       Text(
                         "Date",
-                        // TODO: Change into theme font
-                        style:
-                            GoogleFonts.nunitoSans(fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.labelLarge,
                       ),
                       const SizedBox(height: 10),
                       TextField(
@@ -109,23 +115,14 @@ class _MyDateTimePickerState extends State<MyDateTimePicker> {
                     initialTime: TimeOfDay.now(),
                   );
                   if (picked != null) {
-                    DateTime oldDateTime =
-                        widget.map[widget.mapKey] ?? DateTime(0);
-                    widget.map.update(
-                      widget.mapKey,
-                      (v) => DateTime(
-                          oldDateTime.year,
-                          oldDateTime.month,
-                          oldDateTime.day,
-                          picked.hour,
-                          picked.minute,
-                          oldDateTime.second,
-                          oldDateTime.millisecond,
-                          oldDateTime.microsecond),
-                    );
                     setState(() {
+                      DateTime oldTime = widget.map[widget.mapKey]!;
+                      DateTime newTime = updateTime(oldTime, picked);
+
+                      widget.map.update(widget.mapKey, (v) => newTime);
+
                       widget.timeController.text =
-                          "${picked.hourOfPeriod.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')} ${picked.hour < 12 ? 'AM' : 'PM'}";
+                          DateFormat.jm().format(newTime);
                     });
                   }
                 },
@@ -136,9 +133,7 @@ class _MyDateTimePickerState extends State<MyDateTimePicker> {
                     children: [
                       Text(
                         "Time",
-                        // TODO: Change into theme font
-                        style:
-                            GoogleFonts.nunitoSans(fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.labelLarge,
                       ),
                       const SizedBox(height: 10),
                       TextField(
