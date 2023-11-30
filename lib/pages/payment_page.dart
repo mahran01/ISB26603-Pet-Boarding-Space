@@ -272,12 +272,12 @@ class _PaymentPageState extends State<PaymentPage> {
                   ),
                   const SizedBox(height: 5),
                   // TODO: voucher card display
-                  Container(
-                    width: double.infinity,
-                    height: 50,
-                    color: Colors.white.withOpacity(0.1),
-                    // child: Row(children: [Text]),
-                  ),
+                  // Container(
+                  //   width: double.infinity,
+                  //   height: 50,
+                  //   color: Colors.white.withOpacity(0.1),
+                  //   // child: Row(children: [Text]),
+                  // ),
                   const SizedBox(height: 25),
                   Padding(
                     padding: const EdgeInsets.only(right: 10),
