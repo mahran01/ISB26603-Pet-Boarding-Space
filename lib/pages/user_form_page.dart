@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_boarding_space/components/date_time_picker.dart';
+import 'package:pet_boarding_space/components/my_fill_button.dart';
+import 'package:pet_boarding_space/components/my_outline_button.dart';
 import 'package:pet_boarding_space/components/my_phone_field.dart';
 import 'package:pet_boarding_space/components/my_table.dart';
 import 'package:pet_boarding_space/components/pet_card.dart';
@@ -48,6 +50,15 @@ class _UserFormPageState extends State<UserFormPage> {
 
   bool durationTooShort() {
     return getDuration().inMinutes < 30;
+  }
+
+  Row buildTextHeader(icon, String text) {
+    return Row(
+      children: [
+        Padding(padding: const EdgeInsets.all(18.0), child: icon),
+        Text(text, style: Theme.of(context).textTheme.titleMedium),
+      ],
+    );
   }
 
   void chooseCat() {
@@ -119,20 +130,6 @@ class _UserFormPageState extends State<UserFormPage> {
     return null;
   }
 
-  void validateTime() {
-    DateTime currTime = DateTime.now().add(const Duration(minutes: 5));
-    timeIsValid = false;
-    if (dateTime["checkin"]!.isBefore(currTime)) {
-      timeErrorMessage = "Invalid check-in time";
-    } else if (getDuration().inMinutes < 0) {
-      timeErrorMessage = "Check-out should be after check-in";
-    } else if (getDuration().inMinutes < 30) {
-      timeErrorMessage = "Duration should be more than 30 minutes";
-    } else {
-      timeIsValid = true;
-    }
-  }
-
   void setFormIsValid() {
     final bool name = nameController.text.isNotEmpty;
     final bool address = addressController.text.isNotEmpty;
@@ -164,8 +161,24 @@ class _UserFormPageState extends State<UserFormPage> {
     petNameController.text = petNameController.text.trim();
   }
 
+  void validateTime() {
+    DateTime currTime = DateTime.now().add(const Duration(minutes: 5));
+    timeIsValid = false;
+    if (dateTime["checkin"]!.isBefore(currTime)) {
+      timeErrorMessage = "Invalid check-in time";
+    } else if (getDuration().inMinutes < 0) {
+      timeErrorMessage = "Check-out should be after check-in";
+    } else if (getDuration().inMinutes < 30) {
+      timeErrorMessage = "Duration should be more than 30 minutes";
+    } else {
+      timeIsValid = true;
+    }
+  }
+
   void confirmModalBottomSheet(BuildContext context) {
+    validateTime();
     clearWhitespace();
+
     String name;
     String address;
     String countryCode;
@@ -204,15 +217,6 @@ class _UserFormPageState extends State<UserFormPage> {
       departureDateTime: departureDateTime,
       pet: pet,
     );
-
-    Row buildTextHeader(icon, String text) {
-      return Row(
-        children: [
-          Padding(padding: const EdgeInsets.all(18.0), child: icon),
-          Text(text, style: Theme.of(context).textTheme.titleMedium),
-        ],
-      );
-    }
 
     showModalBottomSheet<dynamic>(
       isScrollControlled: true,
@@ -285,33 +289,14 @@ class _UserFormPageState extends State<UserFormPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          fixedSize: const Size(
-                            150,
-                            50,
-                          ),
-                          side: BorderSide(
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                        child: const Text('Cancel'),
-                        onPressed: () => Navigator.pop(context),
+                      MyOutlineButton(
+                        text: 'Cancel',
+                        onTap: () => Navigator.pop(context),
                       ),
                       const SizedBox(width: 10),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          fixedSize: const Size(
-                            150,
-                            50,
-                          ),
-                          primary: Theme.of(context).primaryColor,
-                        ),
-                        child: const Text(
-                          'Confirm',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: () => validateForm(user),
+                      MyFillButton(
+                        text: 'Confirm',
+                        onTap: () => setState(() => validateForm(user)),
                       ),
                     ],
                   ),
@@ -603,12 +588,12 @@ class _UserFormPageState extends State<UserFormPage> {
 
                 // time error message ------------------------------------------
                 Text(
-                  phoneErrorMessage,
+                  timeErrorMessage,
                   style: !timeIsValid
                       ? Theme.of(context)
                           .textTheme
-                          .labelMedium
-                          ?.copyWith(color: Theme.of(context).colorScheme.error)
+                          .labelMedium!
+                          .copyWith(color: Theme.of(context).colorScheme.error)
                       : const TextStyle(height: 0, fontSize: 0),
                 ),
 

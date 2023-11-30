@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:pet_boarding_space/components/boarding_space_card.dart';
+import 'package:pet_boarding_space/components/my_fill_button.dart';
+import 'package:pet_boarding_space/components/my_outline_button.dart';
 import 'package:pet_boarding_space/models/boarding_space.dart';
 import 'package:pet_boarding_space/models/pet.dart';
 import 'package:pet_boarding_space/models/user.dart';
 import 'package:pet_boarding_space/data/data.dart';
+import 'package:pet_boarding_space/theme/texts.dart';
 
 class SpaceListPage extends StatefulWidget {
   const SpaceListPage({super.key});
@@ -15,49 +17,49 @@ class SpaceListPage extends StatefulWidget {
 
 class _SpaceListPageState extends State<SpaceListPage> {
   void spaceModalBottomSheet(
-      BuildContext context, User user, BoardingSpace bs) {
+    BuildContext context,
+    User user,
+    BoardingSpace bs,
+  ) {
     showModalBottomSheet<dynamic>(
       isScrollControlled: true,
       context: context,
-      builder: (BuildContext context) => Container(
-        height: 550,
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
-        child: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            Container(
-              height: 300,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
-                image: DecorationImage(
-                  image: AssetImage(bs.imageUrl),
-                  fit: BoxFit.cover,
+      builder: (BuildContext context) => Wrap(
+        children: [
+          // image container
+          Stack(
+            children: [
+              Container(
+                height: 300,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                  image: DecorationImage(
+                    image: AssetImage(bs.imageUrl),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-            ),
-            Container(
-              height: 4,
-              width: 40,
-              margin: const EdgeInsets.only(top: 16),
-              decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(1),
-                  borderRadius: BorderRadius.circular(10)),
-            ),
-            Column(
-              children: [
-                const SizedBox(height: 250),
-                Expanded(
-                  child: Container(
+              // custom drawer drag icon
+              Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                  height: 4,
+                  width: 40,
+                  margin: const EdgeInsets.only(top: 16),
+                  decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(1),
+                      borderRadius: BorderRadius.circular(10)),
+                ),
+              ),
+              // bottom drawer
+              Column(
+                children: [
+                  const SizedBox(height: 280),
+                  Container(
                     decoration: BoxDecoration(
                       boxShadow: [
                         BoxShadow(
@@ -78,38 +80,61 @@ class _SpaceListPageState extends State<SpaceListPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 30),
                           Text(
                             bs.name,
-                            style: GoogleFonts.jetBrainsMono(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white.withOpacity(0.75),
-                            ),
+                            style: Theme.of(context).textTheme.headlineMedium,
                           ),
-                          SizedBox(height: 15),
+                          const SizedBox(height: 15),
                           Container(
                             width: double.infinity,
                             height: 2,
                             color: Colors.white.withOpacity(0.3),
                           ),
-                          SizedBox(height: 10),
-                          Text(
-                            'RM ${bs.hourlyRates.toStringAsFixed(2)}/hour',
-                            style: GoogleFonts.jetBrainsMono(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white.withOpacity(0.75),
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            'RM ${bs.dailyRates.toStringAsFixed(2)}/day',
-                            style: GoogleFonts.jetBrainsMono(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white.withOpacity(0.75),
-                            ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Hourly rates:",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge!
+                                          .copyWith(
+                                              color: Colors.white
+                                                  .withOpacity(0.5)),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                        'RM ${bs.hourlyRates.toStringAsFixed(2)}/hour',
+                                        style: numberSmallText),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Daily rates:",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge!
+                                          .copyWith(
+                                              color: Colors.white
+                                                  .withOpacity(0.5)),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                        'RM ${bs.dailyRates.toStringAsFixed(2)}/day',
+                                        style: numberSmallText),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 15),
                           Container(
@@ -124,47 +149,34 @@ class _SpaceListPageState extends State<SpaceListPage> {
                           ),
                           const SizedBox(height: 5),
                           Wrap(
+                            spacing: 8.0,
+                            runSpacing: 4.0,
                             children: [
                               for (int i = 0; i < bs.features.length; i++)
-                                Wrap(
-                                  children: [
-                                    Text(bs.features[i]),
-                                    const SizedBox(width: 15),
-                                  ],
+                                Card(
+                                  elevation: 1,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(2)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 13),
+                                    child: Text(bs.features[i]),
+                                  ),
                                 ),
                             ],
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 30),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  fixedSize: const Size(
-                                    150,
-                                    50,
-                                  ),
-                                  side: BorderSide(
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                ),
-                                child: const Text('Cancel'),
-                                onPressed: () => Navigator.pop(context),
+                              MyOutlineButton(
+                                text: 'Cancel',
+                                onTap: () => Navigator.pop(context),
                               ),
-                              const SizedBox(width: 10),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  fixedSize: const Size(
-                                    150,
-                                    50,
-                                  ),
-                                  primary: Theme.of(context).primaryColor,
-                                ),
-                                child: const Text(
-                                  'Book',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                onPressed: () {
+                              const SizedBox(width: 30),
+                              MyFillButton(
+                                text: 'Book',
+                                onTap: () {
                                   Navigator.pop(context);
                                   Navigator.pushNamed(
                                     context,
@@ -177,16 +189,17 @@ class _SpaceListPageState extends State<SpaceListPage> {
                                 },
                               ),
                             ],
-                          )
+                          ),
+                          const SizedBox(height: 20),
                         ],
                       ),
                     ),
                   ),
-                ),
-              ],
-            )
-          ],
-        ),
+                ],
+              ),
+            ],
+          )
+        ],
       ),
     );
   }
@@ -194,9 +207,9 @@ class _SpaceListPageState extends State<SpaceListPage> {
   @override
   Widget build(BuildContext context) {
     // TODO: reset change test
-    // User user = User.testData();
+    User user = User.testData();
 
-    User user = ModalRoute.of(context)!.settings.arguments as User;
+    // User user = ModalRoute.of(context)!.settings.arguments as User;
     PetType userPet = user.pet.petType;
     return Scaffold(
       resizeToAvoidBottomInset: false,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pet_boarding_space/components/my_fill_button.dart';
+import 'package:pet_boarding_space/components/my_outline_button.dart';
 
 class RatingDialog extends StatefulWidget {
   @override
@@ -26,53 +28,45 @@ class _RatingDialogState extends State<RatingDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Center(
-        child: Text('Rate your experience'),
-      ),
-      content: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          _buildStar(1),
-          _buildStar(2),
-          _buildStar(3),
-          _buildStar(4),
-          _buildStar(5),
-        ],
-      ),
-      actions: <Widget>[
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            fixedSize: const Size(
-              110,
-              50,
-            ),
-            side: BorderSide(
-              color: Theme.of(context).primaryColor,
-            ),
-          ),
-          onPressed: Navigator.of(context).pop,
-          child: const Text('CANCEL'),
+      titlePadding: EdgeInsets.only(top: 40, left: 30, right: 30),
+      title: Center(
+        child: Text(
+          'How was your experience?',
+          style: Theme.of(context).textTheme.titleLarge,
+          textAlign: TextAlign.center,
         ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            fixedSize: const Size(
-              110,
-              50,
-            ),
-            primary: Theme.of(context).primaryColor,
-          ),
-          child: const Text(
-            'NEXT',
-            style: TextStyle(color: Colors.white),
-          ),
-          onPressed: () {
+      ),
+      content: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            _buildStar(1),
+            _buildStar(2),
+            _buildStar(3),
+            _buildStar(4),
+            _buildStar(5),
+          ],
+        ),
+      ),
+      actionsAlignment: MainAxisAlignment.spaceEvenly,
+      actions: <Widget>[
+        MyOutlineButton(
+          text: 'Cancel',
+          onTap: Navigator.of(context).pop,
+          width: 110,
+        ),
+        MyFillButton(
+          text: 'Confirm',
+          onTap: () {
             Navigator.of(context).pop(_stars);
             Navigator.pushNamed(
               context,
               "/intropage",
             );
           },
-        )
+          width: 110,
+        ),
       ],
     );
   }

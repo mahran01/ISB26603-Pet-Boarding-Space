@@ -35,12 +35,16 @@ class IntroPage extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              Text("Meow Woof",
-                  style: Theme.of(context).textTheme.headlineLarge),
+              Text(
+                "Meow Woof",
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
               const SizedBox(height: 5),
-              Text("We will help you give the best \n experiences for your pet",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge),
+              Text(
+                "We will help you give the best \n experiences for your pet",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
               const SizedBox(height: 30),
               Align(
                 alignment: Alignment.bottomCenter,
@@ -52,7 +56,7 @@ class IntroPage extends StatelessWidget {
                       border: Border.all(color: Theme.of(context).primaryColor),
                     ),
                     padding: const EdgeInsets.all(25),
-                    child: Text("START BOOKING"),
+                    child: const Text("START BOOKING"),
                   ),
                 ),
               ),

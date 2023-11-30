@@ -59,6 +59,7 @@ class _MyDateTimePickerState extends State<MyDateTimePicker> {
             Expanded(
               child: GestureDetector(
                 onTap: () async {
+                  FocusManager.instance.primaryFocus?.unfocus();
                   pickedDate = await showDatePicker(
                     context: context,
                     initialDate: pickedDate == null ||
@@ -110,6 +111,7 @@ class _MyDateTimePickerState extends State<MyDateTimePicker> {
             Expanded(
               child: GestureDetector(
                 onTap: () async {
+                  FocusManager.instance.primaryFocus?.unfocus();
                   final TimeOfDay? picked = await showTimePicker(
                     context: context,
                     initialTime: TimeOfDay.now(),

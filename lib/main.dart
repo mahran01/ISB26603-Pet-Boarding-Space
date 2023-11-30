@@ -19,6 +19,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       theme: _meowoofTheme,
       debugShowCheckedModeBanner: false,
+      // home: const IntroPage(),
       home: const IntroPage(),
       routes: {
         '/intropage': (context) => const IntroPage(),
@@ -79,5 +80,6 @@ TextTheme _buildMeowoofTextTheme(TextTheme base) {
       fontWeight: FontWeight.w900,
       color: Colors.grey[100],
     ),
+    titleLarge: base.titleLarge!.copyWith(fontWeight: FontWeight.bold),
   );
 }

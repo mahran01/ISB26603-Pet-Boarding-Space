@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pet_boarding_space/components/my_fill_button.dart';
+import 'package:pet_boarding_space/components/my_outline_button.dart';
 import 'package:pet_boarding_space/components/my_table.dart';
 import 'package:pet_boarding_space/components/rating_dialog.dart';
 import 'package:pet_boarding_space/models/boarding_space.dart';
 import 'package:pet_boarding_space/models/user.dart';
 import 'package:pet_boarding_space/data/data.dart';
+import 'package:pet_boarding_space/theme/texts.dart';
 
 class PaymentPage extends StatefulWidget {
   const PaymentPage({super.key});
@@ -23,6 +26,9 @@ class _PaymentPageState extends State<PaymentPage> {
   late bool discountErrDisplay;
   late double discount;
   late double totalPayment;
+  late bool showCheckoutChange;
+  late bool dismissCheckoutChange;
+  late DateTime newDapartureDateTime;
 
   void applyDiscount() {
     FocusManager.instance.primaryFocus?.unfocus();
@@ -47,12 +53,29 @@ class _PaymentPageState extends State<PaymentPage> {
 
     Duration duration = user.departureDateTime.difference(user.checkInDateTime);
     int day = duration.inDays;
-    int hour = duration.inHours - (day * 24);
-    int minute = duration.inMinutes - (duration.inHours * 60);
+    int hour = duration.inHours % 24;
+    int minute = duration.inMinutes % 60;
 
-    total += day * bs.dailyRates;
     total += hour * (bs.hourlyRates);
     total += minute >= 30 ? bs.hourlyRates : 0;
+
+    /*
+     * Set customer total hourly rate to daily rate and auto set departure date 
+     * to a day. This is because if customer were to stay for 20 hours and the 
+     * rate is higher than one day rate, then better to book for a day and leave
+     * sooner than departure date.
+     */
+    if (bs.dailyRates <= total) {
+      total = bs.dailyRates;
+      newDapartureDateTime = user.checkInDateTime.add(
+        Duration(days: duration.inDays + 1),
+      );
+      showCheckoutChange = true;
+    } else {
+      showCheckoutChange = false;
+    }
+
+    total += day * bs.dailyRates;
 
     return total;
   }
@@ -67,6 +90,9 @@ class _PaymentPageState extends State<PaymentPage> {
     discountErrDisplay = false;
     discount = 0.0;
     totalPayment = 0.0;
+    showCheckoutChange = false;
+    newDapartureDateTime = DateTime(0);
+    dismissCheckoutChange = false;
   }
 
   @override
@@ -76,6 +102,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
     user = args["User"] as User;
     bs = args["BoardingSpace"] as BoardingSpace;
+    newDapartureDateTime = user.departureDateTime;
 
     totalRate = calculateRate(user, bs);
     totalPayment = totalRate - discount;
@@ -127,8 +154,41 @@ class _PaymentPageState extends State<PaymentPage> {
               "Check-in":
                   DateFormat.yMEd().add_jm().format(user.checkInDateTime),
               "Check-out":
-                  DateFormat.yMEd().add_jm().format(user.departureDateTime),
+                  DateFormat.yMEd().add_jm().format(newDapartureDateTime),
             }),
+            Container(
+              height: showCheckoutChange && !dismissCheckoutChange ? null : 0,
+              margin: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(2)),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      "Due to your check-out date & time will cost the same as above, we set it later so can have flexibility when picking up your pet.",
+                      style: Theme.of(context).textTheme.labelSmall,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    onPressed: () =>
+                        setState(() => dismissCheckoutChange = true),
+                    child: const Text(
+                      "OK",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             buildTextHeader(
               const Icon(Icons.house),
               "Boarding space information",
@@ -195,20 +255,10 @@ class _PaymentPageState extends State<PaymentPage> {
                         ),
                       ),
                       const SizedBox(width: 20),
-                      SizedBox(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            fixedSize: const Size(
-                              110,
-                              50,
-                            ),
-                            side: BorderSide(
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
-                          onPressed: applyDiscount,
-                          child: const Text('Apply'),
-                        ),
+                      MyOutlineButton(
+                        text: 'Apply',
+                        onTap: applyDiscount,
+                        width: 110,
                       ),
                     ],
                   ),
@@ -220,6 +270,14 @@ class _PaymentPageState extends State<PaymentPage> {
                             color: Theme.of(context).colorScheme.error)
                         : const TextStyle(height: 0, fontSize: 0),
                   ),
+                  const SizedBox(height: 5),
+                  // TODO: voucher card display
+                  Container(
+                    width: double.infinity,
+                    height: 50,
+                    color: Colors.white.withOpacity(0.1),
+                    // child: Row(children: [Text]),
+                  ),
                   const SizedBox(height: 25),
                   Padding(
                     padding: const EdgeInsets.only(right: 10),
@@ -229,7 +287,10 @@ class _PaymentPageState extends State<PaymentPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text('Total Rate:'),
-                            Text('RM ${totalRate.toStringAsFixed(2)}'),
+                            Text(
+                              'RM ${totalRate.toStringAsFixed(2)}',
+                              style: numberSmallText,
+                            ),
                           ],
                         ),
                         const SizedBox(height: 10),
@@ -239,7 +300,10 @@ class _PaymentPageState extends State<PaymentPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text('Discount:'),
-                              Text('- RM ${discount.toStringAsFixed(2)}'),
+                              Text(
+                                '- RM ${discount.toStringAsFixed(2)}',
+                                style: numberSmallText,
+                              ),
                             ],
                           ),
                         ),
@@ -253,7 +317,7 @@ class _PaymentPageState extends State<PaymentPage> {
                             ),
                             Text(
                               'RM ${totalPayment.toStringAsFixed(2)}',
-                              style: Theme.of(context).textTheme.bodyLarge,
+                              style: numberMediumText,
                             ),
                           ],
                         ),
@@ -262,26 +326,15 @@ class _PaymentPageState extends State<PaymentPage> {
                   ),
                   const SizedBox(height: 40),
                   Center(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: const Size(
-                          200,
-                          50,
-                        ),
-                        primary: Theme.of(context).primaryColor,
+                    child: MyFillButton(
+                      text: "Rate",
+                      onTap: () => showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return RatingDialog();
+                        },
                       ),
-                      child: const Text(
-                        'Rate',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return RatingDialog();
-                          },
-                        );
-                      },
+                      width: 200,
                     ),
                   ),
                 ],

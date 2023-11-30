@@ -1,6 +1,6 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:pet_boarding_space/models/boarding_space.dart';
+import 'package:pet_boarding_space/theme/texts.dart';
 
 class BoardingSpaceCard extends StatelessWidget {
   final BoardingSpace boardingSpace;
@@ -39,14 +39,51 @@ class BoardingSpaceCard extends StatelessWidget {
                 children: [
                   Text(
                     boardingSpace.name,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  Text(
-                      'RM ${boardingSpace.hourlyRates.toStringAsFixed(2)} / hour',
-                      style: Theme.of(context).textTheme.labelLarge!),
-                  Text(
-                      'RM ${boardingSpace.dailyRates.toStringAsFixed(2)} / day',
-                      style: Theme.of(context).textTheme.labelLarge!),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Hourly rates:",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge!
+                                  .copyWith(
+                                      color: Colors.white.withOpacity(0.5)),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                                '${boardingSpace.hourlyRates.toStringAsFixed(2)}/hour',
+                                style: numberSmallText),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Daily rates:",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge!
+                                  .copyWith(
+                                      color: Colors.white.withOpacity(0.5)),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                                '${boardingSpace.dailyRates.toStringAsFixed(2)}/day',
+                                style: numberSmallText),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ],
               ),
             ),
