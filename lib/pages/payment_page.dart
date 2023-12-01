@@ -331,7 +331,7 @@ class _PaymentPageState extends State<PaymentPage> {
                       onTap: () => showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return RatingDialog();
+                          return const RatingDialog();
                         },
                       ),
                       width: 200,

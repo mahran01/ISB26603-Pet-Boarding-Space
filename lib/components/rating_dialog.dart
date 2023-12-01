@@ -3,8 +3,10 @@ import 'package:pet_boarding_space/components/my_fill_button.dart';
 import 'package:pet_boarding_space/components/my_outline_button.dart';
 
 class RatingDialog extends StatefulWidget {
+  const RatingDialog({super.key});
+
   @override
-  _RatingDialogState createState() => _RatingDialogState();
+  State<RatingDialog> createState() => _RatingDialogState();
 }
 
 class _RatingDialogState extends State<RatingDialog> {
@@ -28,7 +30,7 @@ class _RatingDialogState extends State<RatingDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      titlePadding: EdgeInsets.only(top: 40, left: 30, right: 30),
+      titlePadding: const EdgeInsets.only(top: 40, left: 30, right: 30),
       title: Center(
         child: Text(
           'How was your experience?',

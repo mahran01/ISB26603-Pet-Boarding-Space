@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pet_boarding_space/pages/intro_page.dart';
 import 'package:pet_boarding_space/pages/payment_page.dart';
 import 'package:pet_boarding_space/pages/space_list_page.dart';
-import 'package:pet_boarding_space/pages/test_page.dart';
 import 'package:pet_boarding_space/pages/user_form_page.dart';
 import 'package:pet_boarding_space/theme/colors.dart';
 
@@ -20,13 +19,12 @@ class MainApp extends StatelessWidget {
       theme: _meowoofTheme,
       debugShowCheckedModeBanner: false,
       // home: const IntroPage(),
-      home: const IntroPage(),
+      home: const SpaceListPage(),
       routes: {
         '/intropage': (context) => const IntroPage(),
         '/userformpage': (context) => const UserFormPage(),
         '/spacelistpage': (context) => const SpaceListPage(),
         '/paymentpage': (context) => const PaymentPage(),
-        '/testpage': (context) => const TestPage(),
       },
     );
   }
