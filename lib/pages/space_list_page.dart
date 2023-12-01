@@ -207,9 +207,9 @@ class _SpaceListPageState extends State<SpaceListPage> {
   @override
   Widget build(BuildContext context) {
     // TODO: reset change test
-    User user = User.testData();
+    // User user = User.testData();
 
-    // User user = ModalRoute.of(context)!.settings.arguments as User;
+    User user = ModalRoute.of(context)!.settings.arguments as User;
     PetType userPet = user.pet.petType;
     return Scaffold(
       resizeToAvoidBottomInset: false,
